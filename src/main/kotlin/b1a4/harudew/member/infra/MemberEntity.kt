@@ -21,21 +21,24 @@ class MemberEntity(
     @Column
     val nickname: String,
 
-    @Column
+    @Column(name = "daily_limit")
+    val dailyLimit: Int = 0,
+
+    @Column(name = "social_type")
     @Enumerated(EnumType.STRING)
     val socialType: SocialType,
 
     @Column
     val character: String,
 
-    @Column(name = "last_stress_test_date")
-    val lastStressTestDate: LocalDate,
+    @Column(name = "stress_test_date", nullable = true)
+    val lastStressTestDate: LocalDate? = null,
 
-    @Column(name = "last_anxiety_test_date")
-    val lastAnxietyTestDate: LocalDate,
+    @Column(name = "anxiety_test_date", nullable = true)
+    val lastAnxietyTestDate: LocalDate? = null,
 
-    @Column(name = "last_depression_test_date")
-    val lastDepressionTestDate: LocalDate
+    @Column(name = "depression_test_date", nullable = true)
+    val lastDepressionTestDate: LocalDate? = null
 
 ) {
 
@@ -55,11 +58,11 @@ class MemberEntity(
             member.id,
             member.email,
             member.nickname,
-            member.socialType,
-            member.character,
-            member.lastStressTestDate,
-            member.lastAnxietyTestDate,
-            member.lastDepressionTestDate
+            socialType = member.socialType,
+            character = member.character,
+            lastStressTestDate = member.lastStressTestDate,
+            lastAnxietyTestDate = member.lastAnxietyTestDate,
+            lastDepressionTestDate = member.lastDepressionTestDate
         )
     }
 

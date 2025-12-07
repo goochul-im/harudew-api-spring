@@ -8,9 +8,9 @@ class Member(
     val nickname: String,
     val socialType: SocialType,
     val character: String,
-    val lastStressTestDate: LocalDate,
-    val lastAnxietyTestDate: LocalDate,
-    val lastDepressionTestDate: LocalDate
+    val lastStressTestDate: LocalDate? = null,
+    val lastAnxietyTestDate: LocalDate? = null,
+    val lastDepressionTestDate: LocalDate? = null
 )
 
 enum class SocialType {
