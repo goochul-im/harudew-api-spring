@@ -1,4 +1,4 @@
-package b1a4.harudew.target.domain
+package b1a4.harudew.person.domain
 
 import b1a4.harudew.member.domain.Member
 import java.time.LocalDate
