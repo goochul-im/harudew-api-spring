@@ -7,7 +7,7 @@ data class DiaryPageResponse(
 )
 
 data class DiaryHomeResponse(
-    val diaries: List<DiaryInfoResponse>,
+    val diaries: List<DiaryResponse>,
     val continuousWritingDate: Int,
     val totalDiaryCount: Int,
     val emotionCountByMonth: Int

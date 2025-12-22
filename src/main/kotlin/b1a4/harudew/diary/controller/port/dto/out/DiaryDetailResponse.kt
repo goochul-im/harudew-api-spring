@@ -7,7 +7,7 @@ import b1a4.harudew.recommend.port.out.RecommendRoutineResponse
 import com.fasterxml.jackson.annotation.JsonProperty
 import java.time.LocalDate
 
-data class DiaryJsonResponse(
+data class DiaryDetailResponse(
     val id: Long,
     val writtenDate: LocalDate,
     val photoPath: List<String>?,

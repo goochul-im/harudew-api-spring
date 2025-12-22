@@ -1,11 +1,10 @@
 package b1a4.harudew.diary.controller.port
 
 import b1a4.harudew.diary.controller.port.dto.out.DiaryAnalysisResponse
-import b1a4.harudew.diary.controller.port.dto.out.DiaryInfoResponse
-import b1a4.harudew.diary.controller.port.dto.out.DiaryJsonResponse
+import b1a4.harudew.diary.controller.port.dto.out.DiaryResponse
+import b1a4.harudew.diary.controller.port.dto.out.DiaryDetailResponse
 import b1a4.harudew.diary.controller.port.dto.out.DiaryPageResponse
 import b1a4.harudew.diary.controller.port.dto.out.DiarySearchResponse
-import b1a4.harudew.diary.domain.Diary
 import b1a4.harudew.member.domain.Member
 import java.time.LocalDate
 
@@ -13,9 +12,9 @@ interface DiaryQueryUseCase {
 
     fun findById(diaryId: Long, member: Member): DiaryAnalysisResponse
 
-    fun findJsonById(diaryId: Long, member: Member): DiaryJsonResponse
+    fun findJsonById(diaryId: Long, member: Member): DiaryDetailResponse
 
-    fun findInfoByDate(diaryId: Long, member: Member, date: LocalDate): DiaryInfoResponse
+    fun findInfoByDate(diaryId: Long, member: Member, date: LocalDate): DiaryResponse
 
     fun search(member: Member, query: String): DiarySearchResponse
 
