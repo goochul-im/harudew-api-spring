@@ -1,6 +1,6 @@
 package b1a4.harudew.diary.controller.port
 
-import b1a4.harudew.diary.controller.port.dto.`in`.CreateDiaryCommand
+import b1a4.harudew.diary.controller.dto.`in`.CreateDiaryCommand
 
 interface DiaryCommandUseCase {
 

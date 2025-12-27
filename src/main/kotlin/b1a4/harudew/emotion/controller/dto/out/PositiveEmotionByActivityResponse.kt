@@ -1,4 +1,4 @@
-package b1a4.harudew.emotion.controller.port.dto.out
+package b1a4.harudew.emotion.controller.dto.out
 
 data class PositiveEmotionByActivityResponse(
     val stability : ActivityEmotionSummaryResponse,

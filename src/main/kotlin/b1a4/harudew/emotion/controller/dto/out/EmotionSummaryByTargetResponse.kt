@@ -1,4 +1,4 @@
-package b1a4.harudew.emotion.controller.port.dto.out
+package b1a4.harudew.emotion.controller.dto.out
 
 import b1a4.harudew.emotion.domain.EmotionType
 import java.time.LocalDate

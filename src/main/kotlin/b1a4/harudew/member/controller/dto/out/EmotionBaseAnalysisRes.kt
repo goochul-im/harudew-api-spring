@@ -1,4 +1,4 @@
-package b1a4.harudew.member.controller.port.dto.out
+package b1a4.harudew.member.controller.dto.out
 
 import b1a4.harudew.emotion.domain.EmotionType
 import com.fasterxml.jackson.annotation.JsonProperty

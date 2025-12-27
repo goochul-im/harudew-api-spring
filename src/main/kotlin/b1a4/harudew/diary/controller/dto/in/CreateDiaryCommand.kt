@@ -1,4 +1,4 @@
-package b1a4.harudew.diary.controller.port.dto.`in`
+package b1a4.harudew.diary.controller.dto.`in`
 
 import b1a4.harudew.member.domain.Member
 import java.time.LocalDate

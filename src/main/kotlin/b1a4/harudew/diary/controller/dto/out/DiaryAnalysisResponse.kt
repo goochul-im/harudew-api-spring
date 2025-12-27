@@ -1,4 +1,4 @@
-package b1a4.harudew.diary.controller.port.dto.out
+package b1a4.harudew.diary.controller.dto.out
 
 import b1a4.harudew.activity.port.out.ActivitySimpleResponse
 import b1a4.harudew.emotion.port.out.EmotionAnalysisResponse

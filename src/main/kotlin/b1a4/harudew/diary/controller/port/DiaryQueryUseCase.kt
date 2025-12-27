@@ -1,10 +1,10 @@
 package b1a4.harudew.diary.controller.port
 
-import b1a4.harudew.diary.controller.port.dto.out.DiaryAnalysisResponse
-import b1a4.harudew.diary.controller.port.dto.out.DiaryResponse
-import b1a4.harudew.diary.controller.port.dto.out.DiaryDetailResponse
-import b1a4.harudew.diary.controller.port.dto.out.DiaryPageResponse
-import b1a4.harudew.diary.controller.port.dto.out.DiarySearchResponse
+import b1a4.harudew.diary.controller.dto.out.DiaryAnalysisResponse
+import b1a4.harudew.diary.controller.dto.out.DiaryResponse
+import b1a4.harudew.diary.controller.dto.out.DiaryDetailResponse
+import b1a4.harudew.diary.controller.dto.out.DiaryPageResponse
+import b1a4.harudew.diary.controller.dto.out.DiarySearchResponse
 import b1a4.harudew.member.domain.Member
 import java.time.LocalDate
 

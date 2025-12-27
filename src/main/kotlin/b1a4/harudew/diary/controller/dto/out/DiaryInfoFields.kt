@@ -1,6 +1,5 @@
-package b1a4.harudew.diary.controller.port.dto.out
+package b1a4.harudew.diary.controller.dto.out
 
-import com.fasterxml.jackson.annotation.JsonProperty
 import java.time.LocalDate
 
 interface DiaryInfoFields {
