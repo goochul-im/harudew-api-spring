@@ -1,15 +1,14 @@
 package b1a4.harudew.emotion.controller.port.dto.out
 
 import b1a4.harudew.emotion.domain.EmotionType
-import b1a4.harudew.member.controller.port.dto.out.Emotions
 import java.time.LocalDate
 
-data class EmotionSummaryByTargetRes(
+data class EmotionSummaryByTargetResponse(
     val date: LocalDate,
-    val emotions: List<EmotionDetailRes>
+    val emotions: List<EmotionDetailResponse>
 )
 
-data class EmotionDetailRes(
+data class EmotionDetailResponse(
     val emotion: EmotionType,
     val count: Int,
     val intensity: Number
