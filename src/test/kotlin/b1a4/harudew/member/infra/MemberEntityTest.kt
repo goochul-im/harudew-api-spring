@@ -1,5 +1,6 @@
 package b1a4.harudew.member.infra
 
+import b1a4.harudew.member.adapter.infra.MemberEntity
 import b1a4.harudew.member.domain.Member
 import b1a4.harudew.member.domain.SocialType
 import org.assertj.core.api.Assertions.*
