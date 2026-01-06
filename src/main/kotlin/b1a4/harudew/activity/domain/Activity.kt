@@ -1,6 +1,6 @@
 package b1a4.harudew.activity.domain
 
-import b1a4.harudew.diary.domain.Diary
+import b1a4.harudew.diary.domain.model.Diary
 import java.time.LocalDate
 import java.time.LocalDateTime
 

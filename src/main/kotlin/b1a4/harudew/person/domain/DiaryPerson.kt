@@ -1,6 +1,6 @@
 package b1a4.harudew.person.domain
 
-import b1a4.harudew.diary.domain.Diary
+import b1a4.harudew.diary.domain.model.Diary
 
 /**
  * 일기에 나타난 인물 매핑 도메인입니다

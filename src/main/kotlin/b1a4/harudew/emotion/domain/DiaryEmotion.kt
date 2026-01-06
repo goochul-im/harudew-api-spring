@@ -1,6 +1,6 @@
 package b1a4.harudew.emotion.domain
 
-import b1a4.harudew.diary.domain.Diary
+import b1a4.harudew.diary.domain.model.Diary
 
 class DiaryEmotion(
     val id: Long,

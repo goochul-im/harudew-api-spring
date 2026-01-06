@@ -1,4 +1,4 @@
-package b1a4.harudew.diary.domain
+package b1a4.harudew.diary.domain.model
 
 import b1a4.harudew.member.domain.Member
 import java.time.LocalDate

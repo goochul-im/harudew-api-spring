@@ -1,4 +1,4 @@
-package b1a4.harudew.diary.application.port
+package b1a4.harudew.diary.application.port.`in`
 
 import b1a4.harudew.diary.adapter.dto.response.DiaryAnalysisResponse
 import b1a4.harudew.diary.adapter.dto.response.DiaryResponse

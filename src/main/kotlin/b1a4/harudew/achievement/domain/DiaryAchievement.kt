@@ -1,6 +1,6 @@
 package b1a4.harudew.achievement.domain
 
-import b1a4.harudew.diary.domain.Diary
+import b1a4.harudew.diary.domain.model.Diary
 
 /**
  * 성취 도메인
