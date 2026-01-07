@@ -1,5 +1,7 @@
 package b1a4.harudew.diary.adapter.out.ai
 
+import b1a4.harudew.diary.adapter.exception.DiaryAnalysisFailedException
+import b1a4.harudew.diary.adapter.exception.DiaryTaggingFailedException
 import b1a4.harudew.diary.application.port.out.DiaryTaggingPort
 import b1a4.harudew.diary.application.port.out.dto.AiDiaryTaggingResponse
 import b1a4.harudew.diary.application.port.out.dto.DiaryAnalysisResponse
@@ -29,7 +31,16 @@ class DiaryTaggingAdapter(
             maxTokens = 4000
         )
 
-        return aiClient.fetchEntity(renderedPrompt, request, AiDiaryTaggingResponse::class.java)
+        try {
+            return aiClient.fetchEntity(renderedPrompt, request, AiDiaryTaggingResponse::class.java)
+        } catch (e: Exception) {
+            throw DiaryTaggingFailedException(
+                e,
+                mapOf(
+                    "content" to content
+                )
+            )
+        }
     }
 
 }
