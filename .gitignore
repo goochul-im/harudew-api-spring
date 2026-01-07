@@ -40,4 +40,4 @@ out/
 
 ### Kotlin ###
 .kotlin
-/src/test/resources/application-dev.yml
+/src/test/resources/application.yml
