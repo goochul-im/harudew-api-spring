@@ -13,12 +13,12 @@ import org.springframework.stereotype.Component
 class DiaryAnalysisAdapter(
     private val aiClient: AiClientPort,
     @Value("classpath:/prompts/diary-analysis.st")
-    private val promptResource: Resource
+    private val prompt: Resource
 ) : DiaryAnalysisPort {
 
     override fun getAnalysis(content: String) : DiaryAnalysisResponse? {
 
-        val template = PromptTemplate(promptResource)
+        val template = PromptTemplate(prompt)
         val renderedPrompt = template.render(mapOf("content" to content))
 
         val request = AiModelRequest(
