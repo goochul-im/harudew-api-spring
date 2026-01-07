@@ -1,5 +1,6 @@
 package b1a4.harudew.diary.adapter.out.ai
 
+import b1a4.harudew.annotation.IntegrationTest
 import b1a4.harudew.diary.application.port.out.dto.DiaryAnalysisResponse
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.DisplayName
@@ -10,7 +11,7 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.ActiveProfiles
 
 @SpringBootTest
-@Tag("integration")
+@IntegrationTest
 class DiaryAnalysisAdapterIntegrationTest {
 
     @Autowired
