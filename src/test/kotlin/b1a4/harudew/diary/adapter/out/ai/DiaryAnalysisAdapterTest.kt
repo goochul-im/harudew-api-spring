@@ -44,7 +44,8 @@ class DiaryAnalysisAdapterTest {
             modelId = "apac.anthropic.claude-sonnet-4-20250514-v1:0",
             temperature = 0.05,
             topP = 0.9,
-            topK = 10
+            topK = 10,
+            maxTokens = 4000
         )
 
         `when`(aiClient.fetchEntity(
