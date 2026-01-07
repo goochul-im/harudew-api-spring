@@ -1,5 +1,6 @@
 package b1a4.harudew.diary.adapter.out.ai
 
+import b1a4.harudew.diary.adapter.exception.DiaryAnalysisFailedException
 import b1a4.harudew.diary.application.port.out.DiaryAnalysisPort
 import b1a4.harudew.diary.application.port.out.dto.DiaryAnalysisResponse
 import b1a4.harudew.global.infrastructure.ai.AiClientPort
@@ -29,7 +30,16 @@ class DiaryAnalysisAdapter(
             maxTokens = 4000
         )
 
-        return aiClient.fetchEntity(renderedPrompt, request, DiaryAnalysisResponse::class.java)
+        try {
+            return aiClient.fetchEntity(renderedPrompt, request, DiaryAnalysisResponse::class.java)
+        } catch (e: Exception) {
+            throw DiaryAnalysisFailedException(
+                e,
+                mapOf(
+                    "content" to content
+                )
+            )
+        }
     }
 
 }
