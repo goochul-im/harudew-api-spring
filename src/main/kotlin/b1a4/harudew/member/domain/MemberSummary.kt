@@ -1,7 +1,6 @@
 package b1a4.harudew.member.domain
 
 import b1a4.harudew.emotion.domain.EmotionSummaryScore
-import org.h2.store.Data
 import java.time.LocalDate
 
 /**
