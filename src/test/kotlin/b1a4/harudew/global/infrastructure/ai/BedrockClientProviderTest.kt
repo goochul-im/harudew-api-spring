@@ -8,7 +8,6 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.ActiveProfiles
 
 @SpringBootTest
-@ActiveProfiles("local")
 class BedrockClientProviderTest {
 
     @Autowired
@@ -19,6 +18,7 @@ class BedrockClientProviderTest {
         // given
         // TODO: 사용자가 테스트하려는 실제 모델 ID와 파라미터로 아래 값을 변경해야 합니다.
         // AWS Bedrock에서 사용 가능한 모델 ID 예시:
+        // - Claude 4 Sonnet: "apac.anthropic.claude-sonnet-4-20250514-v1:0"
         // - Claude 3.5 Sonnet: "anthropic.claude-3-5-sonnet-20240620-v1:0"
         // - Claude 3 Haiku: "anthropic.claude-3-haiku-20240307-v1:0"
         // - Titan Text G1 - Lite: "amazon.titan-text-lite-v1"
