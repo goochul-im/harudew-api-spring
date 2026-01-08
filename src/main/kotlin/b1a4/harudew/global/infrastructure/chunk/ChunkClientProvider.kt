@@ -1,7 +1,5 @@
-package b1a4.harudew.global.infrastructure.api
+package b1a4.harudew.global.infrastructure.chunk
 
-import b1a4.harudew.global.infrastructure.api.dto.ParserRequest
-import b1a4.harudew.global.infrastructure.api.dto.ParserResponse
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 import org.springframework.web.client.RestClient

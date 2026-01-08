@@ -1,4 +1,4 @@
-package b1a4.harudew.global.infrastructure.ai.dto
+package b1a4.harudew.global.infrastructure.ai
 
 data class AiModelRequest(
     val modelId: String,

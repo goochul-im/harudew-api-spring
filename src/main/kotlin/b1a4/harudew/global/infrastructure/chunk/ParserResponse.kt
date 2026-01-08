@@ -1,4 +1,4 @@
-package b1a4.harudew.global.infrastructure.api.dto
+package b1a4.harudew.global.infrastructure.chunk
 
 data class ParserResponse(
     val sentences: List<String>

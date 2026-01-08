@@ -1,9 +1,7 @@
-package b1a4.harudew.global.infrastructure.api
+package b1a4.harudew.global.infrastructure.chunk
 
-import b1a4.harudew.global.infrastructure.api.dto.ParserResponse
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.springframework.beans.factory.annotation.Autowired

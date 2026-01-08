@@ -3,7 +3,7 @@ package b1a4.harudew.diary.adapter.out.ai
 import b1a4.harudew.diary.application.port.out.dto.DiaryAnalysisResponse
 import b1a4.harudew.diary.application.port.out.dto.Reflection
 import b1a4.harudew.global.infrastructure.ai.AiClientPort
-import b1a4.harudew.global.infrastructure.ai.dto.AiModelRequest
+import b1a4.harudew.global.infrastructure.ai.AiModelRequest
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test

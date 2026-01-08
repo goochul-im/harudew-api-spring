@@ -6,7 +6,7 @@ import b1a4.harudew.diary.application.port.out.DiaryTaggingPort
 import b1a4.harudew.diary.application.port.out.dto.AiDiaryTaggingResponse
 import b1a4.harudew.diary.application.port.out.dto.DiaryAnalysisResponse
 import b1a4.harudew.global.infrastructure.ai.AiClientPort
-import b1a4.harudew.global.infrastructure.ai.dto.AiModelRequest
+import b1a4.harudew.global.infrastructure.ai.AiModelRequest
 import org.springframework.ai.chat.prompt.PromptTemplate
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.core.io.Resource

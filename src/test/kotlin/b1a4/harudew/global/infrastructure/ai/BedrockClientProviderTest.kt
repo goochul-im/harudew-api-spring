@@ -1,6 +1,6 @@
 package b1a4.harudew.global.infrastructure.ai
 
-import b1a4.harudew.global.infrastructure.ai.dto.AiModelRequest
+import b1a4.harudew.global.infrastructure.ai.AiModelRequest
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
