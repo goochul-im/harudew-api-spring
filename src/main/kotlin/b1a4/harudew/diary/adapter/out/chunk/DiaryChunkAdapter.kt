@@ -1,4 +1,4 @@
-package b1a4.harudew.diary.adapter.out.api
+package b1a4.harudew.diary.adapter.out.chunk
 
 import b1a4.harudew.diary.application.port.out.DiaryChunkPort
 import b1a4.harudew.global.infrastructure.chunk.ChunkClientPort
