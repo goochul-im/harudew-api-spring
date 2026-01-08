@@ -29,8 +29,8 @@ class ChunkClientIntegrationTest {
         println("응답 결과: $result")
 
         assertThat(result).isNotNull
-        assertThat(result.sentences).hasSize(5)
-        assertThat(result.sentences).containsExactly(
+        assertThat(result.chunks).hasSize(5)
+        assertThat(result.chunks).containsExactly(
             "첫 번째 문장입니다.",
             "두 번째 문장입니다.",
             "세 번째 문장입니다.",
