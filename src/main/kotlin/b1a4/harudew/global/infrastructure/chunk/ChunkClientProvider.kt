@@ -1,5 +1,6 @@
 package b1a4.harudew.global.infrastructure.chunk
 
+import b1a4.harudew.diary.application.port.out.dto.ChunkResult
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 import org.springframework.web.client.RestClient
@@ -13,14 +14,23 @@ class ChunkClientProvider(
 
     private val restClient = restClientBuilder.build()
 
-    override fun chunk(content: String): ParserResponse {
+    override fun chunk(content: String): ChunkResult {
         val response =
             restClient.post()
                 .uri(parserUrl)
-                .body(ParserRequest(content)) // 자동으로 JSON 변환
+                .body(ParserRawRequest(content)) // 자동으로 JSON 변환
                 .retrieve()
-                .body(ParserResponse::class.java)
+                .body(ParserRawResponse::class.java)
 
-        return response!!
+        return ChunkResult(response!!.sentences)
     }
+
+    private data class ParserRawRequest(
+        val text: String
+    )
+
+    private data class ParserRawResponse(
+        val sentences: List<String>
+    )
+
 }
