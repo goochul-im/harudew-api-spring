@@ -28,11 +28,11 @@ class EmbedClient(
         return response!!.embedding
     }
 
-    data class EmbedRawRequest(
+    private data class EmbedRawRequest(
         val text: String
     )
 
-    data class EmbedRawResponse(
+    private data class EmbedRawResponse(
         val success: Boolean,
         val embedding: List<Double>,
         val dimension: Int?,
