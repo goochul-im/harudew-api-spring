@@ -1,6 +1,6 @@
 package b1a4.harudew.diary.application.port.out
 
-interface DualEmbedderPort {
+interface SimpleEmbedderPort {
 
     fun embed(content: String): List<Double>
 

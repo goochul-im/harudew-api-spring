@@ -1,17 +1,15 @@
 package b1a4.harudew.global.infrastructure.embed
 
-import b1a4.harudew.global.exception.BusinessException
-import b1a4.harudew.global.exception.ErrorCode
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 import org.springframework.web.client.RestClient
 
 @Component
-class DualEmbedClient(
-    @Value("\${embed.dual.url}") // application.yml의 설정값 읽기
+class EmbedClient(
+    @Value("\${embed.simple.url}") // application.yml의 설정값 읽기
     private val url: String,
     restClientBuilder: RestClient.Builder
-) : DualEmbedClientPort {
+) : EmbedClientPort {
 
     private val restClient = restClientBuilder.build()
 
@@ -23,11 +21,22 @@ class DualEmbedClient(
 
         val response = restClient.post()
             .uri(url)
-            .body(EmbedRequest(cleanText))
+            .body(EmbedRawRequest(cleanText))
             .retrieve()
-            .body(EmbedResponse::class.java)
+            .body(EmbedRawResponse::class.java)
 
         return response!!.embedding
     }
+
+    data class EmbedRawRequest(
+        val text: String
+    )
+
+    data class EmbedRawResponse(
+        val success: Boolean,
+        val embedding: List<Double>,
+        val dimension: Int?,
+        val error: String?
+    )
 
 }

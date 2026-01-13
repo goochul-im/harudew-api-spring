@@ -8,10 +8,10 @@ import org.springframework.boot.test.context.SpringBootTest
 
 @SpringBootTest
 @IntegrationTest
-class DualEmbedClientTest {
+class EmbedClientTest {
 
     @Autowired
-    private lateinit var dualEmbedClient: DualEmbedClient
+    private lateinit var dualEmbedClient: EmbedClient
 
     @Test
     fun `임베딩 요청을 보내면 벡터값을 반환한다`() {
