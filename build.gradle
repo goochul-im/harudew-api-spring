@@ -39,6 +39,7 @@ dependencies {
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
     implementation 'io.github.oshai:kotlin-logging-jvm:7.0.0'
     testImplementation 'org.mockito.kotlin:mockito-kotlin:5.4.0'
+    implementation 'io.qdrant:client:1.16.2'
 }
 
 kotlin {
