@@ -1,4 +1,4 @@
-package b1a4.harudew.diary.application.port.out.vector
+package b1a4.harudew.diary.application.port.out.vector.keyword
 
 interface KeywordVectorPort {
 
