@@ -1,4 +1,4 @@
-package b1a4.harudew.diary.application.port.out
+package b1a4.harudew.diary.application.port.out.embed
 
 interface SimpleEmbedderPort {
 

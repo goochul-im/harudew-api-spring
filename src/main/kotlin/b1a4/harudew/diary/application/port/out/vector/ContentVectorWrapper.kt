@@ -1,4 +1,4 @@
-package b1a4.harudew.diary.application.port.out.dto
+package b1a4.harudew.diary.application.port.out.vector
 
 /**
  * @param content 벡터화 되기 전 내용

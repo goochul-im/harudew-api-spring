@@ -1,6 +1,6 @@
 package b1a4.harudew.global.infrastructure.rerank
 
-import b1a4.harudew.diary.application.port.out.dto.RerankResult
+import b1a4.harudew.diary.application.port.out.rerank.RerankResult
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.core.ParameterizedTypeReference
 import org.springframework.stereotype.Component

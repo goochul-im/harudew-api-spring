@@ -1,6 +1,6 @@
 package b1a4.harudew.global.infrastructure.chunk
 
-import b1a4.harudew.diary.application.port.out.dto.ChunkResult
+import b1a4.harudew.diary.application.port.out.chunk.ChunkResult
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 import org.springframework.web.client.RestClient

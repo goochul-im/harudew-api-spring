@@ -1,4 +1,4 @@
-package b1a4.harudew.diary.application.port.out.dto
+package b1a4.harudew.diary.application.port.out.vector
 
 data class SaveKeywordReqeust(
     val keywords: List<ContentVectorWrapper>,

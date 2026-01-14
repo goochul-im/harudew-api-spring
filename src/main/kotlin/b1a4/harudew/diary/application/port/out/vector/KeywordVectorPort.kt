@@ -1,6 +1,4 @@
-package b1a4.harudew.diary.application.port.out
-
-import b1a4.harudew.diary.application.port.out.dto.SaveKeywordReqeust
+package b1a4.harudew.diary.application.port.out.vector
 
 interface KeywordVectorPort {
 

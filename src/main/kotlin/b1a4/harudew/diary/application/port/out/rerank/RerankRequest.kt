@@ -1,4 +1,4 @@
-package b1a4.harudew.diary.application.port.out.dto
+package b1a4.harudew.diary.application.port.out.rerank
 
 import b1a4.harudew.global.infrastructure.rerank.CandidateRequest
 

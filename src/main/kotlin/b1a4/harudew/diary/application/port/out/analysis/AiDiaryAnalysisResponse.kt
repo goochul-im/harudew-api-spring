@@ -1,4 +1,4 @@
-package b1a4.harudew.diary.application.port.out.dto
+package b1a4.harudew.diary.application.port.out.analysis
 
 import com.fasterxml.jackson.annotation.JsonProperty
 
