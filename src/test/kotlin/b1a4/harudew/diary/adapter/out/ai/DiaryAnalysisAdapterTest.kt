@@ -1,7 +1,7 @@
 package b1a4.harudew.diary.adapter.out.ai
 
-import b1a4.harudew.diary.application.port.out.dto.DiaryAnalysisResponse
-import b1a4.harudew.diary.application.port.out.dto.Reflection
+import b1a4.harudew.diary.application.port.out.analysis.DiaryAnalysisResponse
+import b1a4.harudew.diary.application.port.out.analysis.Reflection
 import b1a4.harudew.global.infrastructure.ai.AiClientPort
 import b1a4.harudew.global.infrastructure.ai.AiModelRequest
 import org.assertj.core.api.Assertions.assertThat

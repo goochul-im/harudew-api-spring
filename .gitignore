@@ -42,3 +42,5 @@ out/
 ### Kotlin ###
 .kotlin
 /src/test/resources/application.yml
+!/CLAUDE.md
+/CLAUDE.md

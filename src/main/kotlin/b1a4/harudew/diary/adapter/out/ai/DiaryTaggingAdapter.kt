@@ -2,9 +2,8 @@ package b1a4.harudew.diary.adapter.out.ai
 
 import b1a4.harudew.diary.adapter.exception.DiaryAnalysisFailedException
 import b1a4.harudew.diary.adapter.exception.DiaryTaggingFailedException
-import b1a4.harudew.diary.application.port.out.DiaryTaggingPort
-import b1a4.harudew.diary.application.port.out.dto.AiDiaryTaggingResponse
-import b1a4.harudew.diary.application.port.out.dto.DiaryAnalysisResponse
+import b1a4.harudew.diary.application.port.out.tagging.AiDiaryTaggingResponse
+import b1a4.harudew.diary.application.port.out.tagging.DiaryTaggingPort
 import b1a4.harudew.global.infrastructure.ai.AiClientPort
 import b1a4.harudew.global.infrastructure.ai.AiModelRequest
 import org.springframework.ai.chat.prompt.PromptTemplate

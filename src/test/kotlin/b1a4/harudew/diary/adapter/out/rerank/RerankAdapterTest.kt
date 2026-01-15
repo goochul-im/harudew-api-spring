@@ -1,9 +1,9 @@
 package b1a4.harudew.diary.adapter.out.rerank
 
 import b1a4.harudew.diary.adapter.exception.RerankFailedException
-import b1a4.harudew.diary.application.port.out.dto.Candidates
-import b1a4.harudew.diary.application.port.out.dto.RerankRequest
-import b1a4.harudew.diary.application.port.out.dto.RerankResult
+import b1a4.harudew.diary.application.port.out.rerank.Candidates
+import b1a4.harudew.diary.application.port.out.rerank.RerankRequest
+import b1a4.harudew.diary.application.port.out.rerank.RerankResult
 import b1a4.harudew.global.infrastructure.rerank.CandidateRequest
 import b1a4.harudew.global.infrastructure.rerank.RerankClientPort
 import org.assertj.core.api.Assertions.assertThat

@@ -1,7 +1,7 @@
 package b1a4.harudew.diary.adapter.out.embed
 
 import b1a4.harudew.diary.adapter.exception.EmbeddingFailedException
-import b1a4.harudew.diary.application.port.out.SimpleEmbedderPort
+import b1a4.harudew.diary.application.port.out.embed.SimpleEmbedderPort
 import b1a4.harudew.global.infrastructure.embed.EmbedClientPort
 import org.springframework.stereotype.Component
 

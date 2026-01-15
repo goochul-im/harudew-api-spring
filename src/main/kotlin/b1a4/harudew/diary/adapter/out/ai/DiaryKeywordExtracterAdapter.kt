@@ -1,10 +1,8 @@
 package b1a4.harudew.diary.adapter.out.ai
 
 import b1a4.harudew.diary.adapter.exception.DiaryAnalysisFailedException
-import b1a4.harudew.diary.application.port.out.DiaryAnalysisPort
-import b1a4.harudew.diary.application.port.out.DiaryKeywordExtracterPort
-import b1a4.harudew.diary.application.port.out.dto.DiaryAnalysisResponse
-import b1a4.harudew.diary.application.port.out.dto.KeywordExtractResponse
+import b1a4.harudew.diary.application.port.out.extract.DiaryKeywordExtracterPort
+import b1a4.harudew.diary.application.port.out.extract.KeywordExtractResponse
 import b1a4.harudew.global.infrastructure.ai.AiClientPort
 import b1a4.harudew.global.infrastructure.ai.AiModelRequest
 import org.springframework.ai.chat.prompt.PromptTemplate

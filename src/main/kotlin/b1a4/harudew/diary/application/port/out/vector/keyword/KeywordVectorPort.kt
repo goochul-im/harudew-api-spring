@@ -4,6 +4,6 @@ interface KeywordVectorPort {
 
     fun save(request: SaveKeywordReqeust)
 
-    fun searchByKeyword(keyword: String, authorId: Long)
+    fun searchByKeyword(query: SearchKeywordQuery) : List<SearchKeywordResult>
 
 }

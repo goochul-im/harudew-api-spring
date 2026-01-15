@@ -6,5 +6,5 @@ package b1a4.harudew.diary.application.port.out.vector
  */
 data class ContentVectorWrapper(
     val content: String,
-    val vector: List<Double>
+    val vector: List<Number>
 )
