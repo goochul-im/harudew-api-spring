@@ -18,7 +18,8 @@
 9. [코딩 컨벤션](#9-코딩-컨벤션)
 10. [Git 전략](#10-git-전략)
 11. [테스트 작성법](#11-테스트-작성법)
-12. [마이그레이션 현황](#12-마이그레이션-현황)
+12. [E2E 테스트 (슈퍼유저)](#12-e2e-테스트-슈퍼유저)
+13. [마이그레이션 현황](#13-마이그레이션-현황)
 
 ---
 
@@ -518,6 +519,83 @@ interface DiaryRepository      // 저장소
 interface DiaryAnalysisPort    // 외부 서비스 (Port 접미사)
 ```
 
+### 인증 어노테이션 사용법
+
+컨트롤러에서 현재 로그인한 회원 정보를 가져오는 두 가지 어노테이션이 있습니다.
+
+#### @MemberId - ID만 필요할 때
+```kotlin
+@GetMapping("/my-profile")
+fun getMyProfile(@MemberId memberId: String): ProfileResponse {
+    return memberService.getProfile(memberId)
+}
+```
+- `String` 타입의 회원 ID만 주입
+- DB 조회 없음 (빠름)
+- ID만 필요한 경우 권장
+
+#### @CurrentMember - Member 객체 전체가 필요할 때
+```kotlin
+@GetMapping("/my-diaries")
+fun getMyDiaries(@CurrentMember member: Member): List<DiaryResponse> {
+    // member 객체를 직접 사용 - 추가 DB 조회 불필요
+    return diaryService.findByMember(member)
+}
+```
+- `Member` 도메인 객체 주입
+- DB에서 회원 정보 조회 (약간의 오버헤드)
+- 회원의 여러 필드가 필요한 경우 사용
+
+> **주의**: 두 어노테이션 모두 인증된 요청에서만 사용 가능. 인증되지 않은 요청에서 사용 시 예외 발생.
+
+### 커스텀 예외 작성법
+
+`BusinessException`을 상속하여 도메인별 예외를 작성합니다.
+
+#### 1. ErrorCode 정의
+```kotlin
+// diary/exception/DiaryErrorCode.kt
+enum class DiaryErrorCode(
+    override val status: HttpStatus,
+    override val message: String
+) : ErrorCode {
+    DIARY_NOT_FOUND(HttpStatus.NOT_FOUND, "일기를 찾을 수 없습니다"),
+    DIARY_ACCESS_DENIED(HttpStatus.FORBIDDEN, "일기에 접근할 권한이 없습니다"),
+    INVALID_DIARY_DATE(HttpStatus.BAD_REQUEST, "유효하지 않은 일기 날짜입니다")
+}
+```
+
+#### 2. 커스텀 예외 클래스 작성
+```kotlin
+// diary/exception/DiaryException.kt
+class DiaryNotFoundException(diaryId: Long) : BusinessException(
+    errorCode = DiaryErrorCode.DIARY_NOT_FOUND,
+    detail = mapOf("diaryId" to diaryId)
+)
+
+class DiaryAccessDeniedException(diaryId: Long, memberId: String) : BusinessException(
+    errorCode = DiaryErrorCode.DIARY_ACCESS_DENIED,
+    detail = mapOf("diaryId" to diaryId, "memberId" to memberId)
+)
+```
+
+#### 3. 예외 발생시키기
+```kotlin
+// 서비스에서 사용
+fun getDiary(diaryId: Long, memberId: String): Diary {
+    val diary = diaryRepository.findById(diaryId)
+        ?: throw DiaryNotFoundException(diaryId)
+
+    if (diary.author.id != memberId) {
+        throw DiaryAccessDeniedException(diaryId, memberId)
+    }
+
+    return diary
+}
+```
+
+> **참고**: `detail` 맵에 추가 정보를 담으면 API 응답에서 디버깅에 유용합니다.
+
 ---
 
 ## 10. Git 전략
@@ -559,16 +637,17 @@ chore(gitignore): 깃이그노어 추가
 in-progress(Qdrant): Qdrant 관련 포트 작성
 ```
 
-**타입**:\
-| 타입 | 설명 |\
-|------|------|\
-| `feat` | 새로운 기능 추가 |\
-| `fix` | 버그 수정 |\
-| `refactor` | 리팩토링 (기능 변경 없음) |\
-| `test` | 테스트 추가/수정 |\
-| `build` | 빌드 설정, 의존성 변경 |\
-| `docs` | 문서 수정 |\
-| `chore` | 기타 잡무 (gitignore 등) |\
+**타입**:
+
+| 타입 | 설명 |
+|------|------|
+| `feat` | 새로운 기능 추가 |
+| `fix` | 버그 수정 |
+| `refactor` | 리팩토링 (기능 변경 없음) |
+| `test` | 테스트 추가/수정 |
+| `build` | 빌드 설정, 의존성 변경 |
+| `docs` | 문서 수정 |
+| `chore` | 기타 잡무 (gitignore 등) |
 | `in-progress` | 작업 중인 기능 (임시 커밋) |
 
 **스코프 작성 팁**:
@@ -681,7 +760,98 @@ assertThatThrownBy { service.doSomething() }
 
 ---
 
-## 12. 마이그레이션 현황
+## 12. E2E 테스트 (슈퍼유저)
+
+E2E 테스트 시 매번 소셜 로그인(Google/Kakao)을 거치지 않고 바로 인증된 상태로 API를 테스트할 수 있는 **슈퍼유저** 기능을 제공합니다.
+
+> **보안**: 이 기능은 `local` 또는 `test` 프로파일에서만 활성화됩니다. 프로덕션에서는 자동으로 비활성화됩니다.
+
+### 설정 (application-local.yml)
+
+```yaml
+super-user:
+  enabled: true
+  id: "super-user-e2e-test"
+  nickname: "E2E테스터"
+  email: "super@test.com"
+  social-type: GOOGLE
+  fixed-access-token: "super-access-token-for-e2e-test"
+```
+
+### 방법 1: 고정 토큰 사용 (Postman 추천)
+
+가장 간편한 방법입니다. 설정된 고정 토큰을 그대로 사용하면 됩니다.
+
+**Postman 설정**:
+1. Collection 또는 Request의 `Authorization` 탭 선택
+2. Type: `Bearer Token` 선택
+3. Token: `super-access-token-for-e2e-test` 입력
+
+```
+Authorization: Bearer super-access-token-for-e2e-test
+```
+
+**cURL 예시**:
+```bash
+curl -X GET http://localhost:8080/api/diaries \
+  -H "Authorization: Bearer super-access-token-for-e2e-test"
+```
+
+### 방법 2: 토큰 동적 발급
+
+JWT 토큰이 필요한 경우 (만료 시간, 클레임 등을 확인해야 할 때) API로 발급받을 수 있습니다.
+
+**토큰 발급**:
+```bash
+GET /api/auth/super-token
+```
+
+**응답**:
+```json
+{
+  "accessToken": "eyJhbGciOiJIUzI1NiJ9...",
+  "refreshToken": "eyJhbGciOiJIUzI1NiJ9...",
+  "expiresIn": 3600
+}
+```
+
+**슈퍼유저 정보 확인**:
+```bash
+GET /api/auth/super-user
+```
+
+**응답**:
+```json
+{
+  "enabled": true,
+  "id": "super-user-e2e-test",
+  "nickname": "E2E테스터",
+  "email": "super@test.com",
+  "socialType": "GOOGLE"
+}
+```
+
+### Postman Collection 설정 팁
+
+Postman에서 환경 변수를 활용하면 더 편리합니다.
+
+1. **Environment 생성**: `HaruDew Local`
+2. **변수 추가**:
+
+   | Variable | Value |
+   |----------|-------|
+   | `baseUrl` | `http://localhost:8080` |
+   | `accessToken` | `super-access-token-for-e2e-test` |
+
+3. **Collection Authorization 설정**:
+   - Type: `Bearer Token`
+   - Token: `{{accessToken}}`
+
+4. 이제 모든 Request가 자동으로 인증됩니다.
+
+---
+
+## 13. 마이그레이션 현황
 
 ### 완료된 모듈
 

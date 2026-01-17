@@ -1,5 +1,6 @@
 package b1a4.harudew.auth.security.jwt
 
+import b1a4.harudew.auth.config.SuperUserProperties
 import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
@@ -19,10 +20,15 @@ import org.springframework.web.filter.OncePerRequestFilter
  * - 토큰 추출 방식 변경: extractToken() 메서드 수정 (쿠키 등)
  * - 권한 부여 방식 변경: authorities 생성 로직 수정
  * - 특정 경로 제외: shouldNotFilter() 메서드 오버라이드
+ *
+ * 슈퍼유저 고정 토큰:
+ * - local/test 프로파일에서 SuperUserProperties가 활성화되면
+ * - 고정 토큰으로 JWT 검증 없이 슈퍼유저로 인증됩니다.
  */
 @Component
 class JwtAuthenticationFilter(
-    private val jwtTokenProvider: JwtTokenProvider
+    private val jwtTokenProvider: JwtTokenProvider,
+    private val superUserProperties: SuperUserProperties?
 ) : OncePerRequestFilter() {
 
     companion object {
@@ -37,32 +43,71 @@ class JwtAuthenticationFilter(
     ) {
         val token = extractToken(request)
 
-        if (token != null && jwtTokenProvider.validateToken(token)) {
-            val memberId = jwtTokenProvider.getMemberIdFromToken(token)
-            val socialType = jwtTokenProvider.getSocialTypeFromToken(token)
-            val nickname = jwtTokenProvider.getNicknameFromToken(token)
+        if (token != null) {
+            // 슈퍼유저 고정 토큰 체크 (local/test 프로파일에서만 동작)
+            if (isSuperUserFixedToken(token)) {
+                setSuperUserAuthentication()
+                filterChain.doFilter(request, response)
+                return
+            }
 
-            // 인증 정보 생성
-            // 확장: 사용자별 권한이 필요하면 여기서 DB 조회 후 권한 추가
-            val authorities = listOf(SimpleGrantedAuthority("ROLE_USER"))
+            // 일반 JWT 토큰 검증
+            if (jwtTokenProvider.validateToken(token)) {
+                val memberId = jwtTokenProvider.getMemberIdFromToken(token)
+                val socialType = jwtTokenProvider.getSocialTypeFromToken(token)
+                val nickname = jwtTokenProvider.getNicknameFromToken(token)
 
-            // Principal 객체 생성 (컨트롤러에서 @CurrentMember로 접근 가능)
-            val principal = JwtPrincipal(
-                memberId = memberId,
-                socialType = socialType,
-                nickname = nickname
-            )
+                // 인증 정보 생성
+                // 확장: 사용자별 권한이 필요하면 여기서 DB 조회 후 권한 추가
+                val authorities = listOf(SimpleGrantedAuthority("ROLE_USER"))
 
-            val authentication = UsernamePasswordAuthenticationToken(
-                principal,
-                null,
-                authorities
-            )
+                // Principal 객체 생성 (컨트롤러에서 @CurrentMember로 접근 가능)
+                val principal = JwtPrincipal(
+                    memberId = memberId,
+                    socialType = socialType,
+                    nickname = nickname
+                )
 
-            SecurityContextHolder.getContext().authentication = authentication
+                val authentication = UsernamePasswordAuthenticationToken(
+                    principal,
+                    null,
+                    authorities
+                )
+
+                SecurityContextHolder.getContext().authentication = authentication
+            }
         }
 
         filterChain.doFilter(request, response)
+    }
+
+    /**
+     * 슈퍼유저 고정 토큰인지 확인
+     */
+    private fun isSuperUserFixedToken(token: String): Boolean {
+        return superUserProperties?.enabled == true &&
+                token == superUserProperties.fixedAccessToken
+    }
+
+    /**
+     * 슈퍼유저로 인증 설정
+     */
+    private fun setSuperUserAuthentication() {
+        val props = superUserProperties ?: return
+
+        val principal = JwtPrincipal(
+            memberId = props.id,
+            socialType = props.socialType,
+            nickname = props.nickname
+        )
+
+        val authentication = UsernamePasswordAuthenticationToken(
+            principal,
+            null,
+            listOf(SimpleGrantedAuthority("ROLE_USER"))
+        )
+
+        SecurityContextHolder.getContext().authentication = authentication
     }
 
     /**
