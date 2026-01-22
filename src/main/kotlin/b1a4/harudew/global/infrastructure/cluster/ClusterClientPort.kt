@@ -1,5 +1,7 @@
 package b1a4.harudew.global.infrastructure.cluster
 
+import com.fasterxml.jackson.annotation.JsonProperty
+
 interface ClusterClientPort {
 
     fun getClusters(request: ClusterRequest): ClusterResponse
@@ -8,7 +10,9 @@ interface ClusterClientPort {
 
 data class ClusterRequest(
     val sentences: List<SentenceItem>,
-    val max_clusters: Int = 20
+
+    @get:JsonProperty("max_clusters") // 필드명은 CamelCase, JSON은 snake_case
+    val maxClusters: Int = 20
 ) {
     data class SentenceItem(
         val id: Int,
@@ -16,16 +20,29 @@ data class ClusterRequest(
     )
 }
 
+// application/port/out/dto/ClusterResponse.kt
 data class ClusterResponse(
-    val optimal_clusters: Int,
-    val silhouette_score: Double,
-    val total_sentences: Int,
+    @JsonProperty("optimal_clusters")
+    val optimalClusters: Int,
+
+    @JsonProperty("silhouette_score")
+    val silhouetteScore: Double,
+
+    @JsonProperty("total_sentences")
+    val totalSentences: Int,
+
     val clusters: List<ClusterGroup>
 ) {
     data class ClusterGroup(
-        val cluster_id: Int,
-        val cluster_size: Int,
-        val representative_sentence: SentenceItem,
+        @JsonProperty("cluster_id")
+        val clusterId: Int,
+
+        @JsonProperty("cluster_size")
+        val clusterSize: Int,
+
+        @JsonProperty("representative_sentence")
+        val representativeSentence: SentenceItem,
+
         val sentences: List<SentenceItem>
     )
 
