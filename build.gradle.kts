@@ -49,8 +49,8 @@ dependencies {
     implementation("io.qdrant:client:1.16.2")
     // 비동기 테스트
     testImplementation("org.awaitility:awaitility-kotlin:4.2.0")
-    // aws
-    implementation("aws.sdk.kotlin:s3:1.5.69")
+    // aws s3 (Spring Cloud AWS for Spring Boot 3.x)
+    implementation("io.awspring.cloud:spring-cloud-aws-starter-s3:3.3.1")
 }
 
 kotlin {
