@@ -28,11 +28,11 @@ class ClusterClientProviderIntegrationTest {
             ClusterRequest.SentenceItem(7, "내일도 화창한 날씨가 예상된다"),
             ClusterRequest.SentenceItem(8, "음식이 너무 맛있어서 행복했다")
         )
-        val request = ClusterRequest(sentences = sentences, max_clusters = 5)
+        val request = ClusterRequest(sentences = sentences, maxClusters = 5)
 
         println("요청 내용:")
         println("- 문장 수: ${sentences.size}")
-        println("- 최대 클러스터 수: ${request.max_clusters}")
+        println("- 최대 클러스터 수: ${request.maxClusters}")
         sentences.forEach { println("  [${it.id}] ${it.text}") }
 
         // when
@@ -40,22 +40,22 @@ class ClusterClientProviderIntegrationTest {
 
         // then
         println("\n응답 결과:")
-        println("- 최적 클러스터 수: ${result.optimal_clusters}")
-        println("- 실루엣 점수: ${result.silhouette_score}")
-        println("- 총 문장 수: ${result.total_sentences}")
+        println("- 최적 클러스터 수: ${result.optimalClusters}")
+        println("- 실루엣 점수: ${result.silhouetteScore}")
+        println("- 총 문장 수: ${result.totalSentences}")
         println("- 클러스터 목록:")
         result.clusters.forEach { cluster ->
-            println("  [클러스터 ${cluster.cluster_id}] 크기: ${cluster.cluster_size}")
-            println("    대표 문장: ${cluster.representative_sentence.text}")
+            println("  [클러스터 ${cluster.clusterId}] 크기: ${cluster.clusterSize}")
+            println("    대표 문장: ${cluster.representativeSentence.text}")
             println("    포함 문장: ${cluster.sentences.map { it.text }}")
         }
 
         assertThat(result).isNotNull
-        assertThat(result.total_sentences).isEqualTo(sentences.size)
-        assertThat(result.optimal_clusters).isGreaterThan(0)
-        assertThat(result.optimal_clusters).isLessThanOrEqualTo(request.max_clusters)
+        assertThat(result.totalSentences).isEqualTo(sentences.size)
+        assertThat(result.optimalClusters).isGreaterThan(0)
+        assertThat(result.optimalClusters).isLessThanOrEqualTo(request.maxClusters)
         assertThat(result.clusters).isNotEmpty
-        assertThat(result.clusters.sumOf { it.cluster_size }).isEqualTo(sentences.size)
+        assertThat(result.clusters.sumOf { it.clusterSize }).isEqualTo(sentences.size)
     }
 
     @Test
@@ -67,7 +67,7 @@ class ClusterClientProviderIntegrationTest {
             ClusterRequest.SentenceItem(2, "슬픈 일이 있었다"),
             ClusterRequest.SentenceItem(3, "기쁜 마음으로 잠들었다")
         )
-        val request = ClusterRequest(sentences = sentences, max_clusters = 3)
+        val request = ClusterRequest(sentences = sentences, maxClusters = 3)
 
         println("요청 내용:")
         sentences.forEach { println("  [${it.id}] ${it.text}") }
@@ -77,11 +77,11 @@ class ClusterClientProviderIntegrationTest {
 
         // then
         println("\n응답 결과:")
-        println("- 최적 클러스터 수: ${result.optimal_clusters}")
-        println("- 클러스터: ${result.clusters.map { it.representative_sentence.text }}")
+        println("- 최적 클러스터 수: ${result.optimalClusters}")
+        println("- 클러스터: ${result.clusters.map { it.representativeSentence.text }}")
 
         assertThat(result).isNotNull
-        assertThat(result.total_sentences).isEqualTo(sentences.size)
+        assertThat(result.totalSentences).isEqualTo(sentences.size)
         assertThat(result.clusters).isNotEmpty
     }
 }
