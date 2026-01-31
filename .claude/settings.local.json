@@ -12,7 +12,8 @@
       "Bash(export PATH=\"$JAVA_HOME/bin:$PATH\")",
       "Bash(java:*)",
       "Bash(aws --version:*)",
-      "Bash(aws s3 ls:*)"
+      "Bash(aws s3 ls:*)",
+      "Bash(echo:*)"
     ]
   }
 }
