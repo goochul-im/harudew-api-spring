@@ -7,6 +7,11 @@ import javax.crypto.Cipher
 import javax.crypto.spec.IvParameterSpec
 import javax.crypto.spec.SecretKeySpec
 
+/**
+ * 텍스트를 암호화/복호화하는 클래스입니다
+ * enc:: 로 시작하는 암호화된 텍스트는 복호화하고, 암호화되지 않은 텍스트는 복호화를 시도하지 않습니다
+ * AES 알고리즘을 채택했습니다
+ */
 @Component
 class AesCbcTextEncryptor(
     @Value("\${encrypt.secret}") private val secretKeyHex: String
