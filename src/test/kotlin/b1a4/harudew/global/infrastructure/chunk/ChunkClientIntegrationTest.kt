@@ -1,5 +1,6 @@
 package b1a4.harudew.global.infrastructure.chunk
 
+import b1a4.harudew.annotation.IntegrationTest
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Tag
@@ -8,7 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 
 @SpringBootTest
-@Tag("integration")
+@IntegrationTest
 class ChunkClientIntegrationTest {
 
     @Autowired

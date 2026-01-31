@@ -44,3 +44,4 @@ out/
 /src/test/resources/application.yml
 !/CLAUDE.md
 /CLAUDE.md
+/.env
