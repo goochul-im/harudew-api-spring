@@ -1,5 +1,6 @@
 package b1a4.harudew.global.orchestration
 
+import b1a4.harudew.diary.application.port.`in`.DiaryRagPreprocessingCommand
 import b1a4.harudew.diary.application.port.`in`.DiaryRagUseCase
 import b1a4.harudew.diary.domain.event.DiaryCreateEvent
 import jakarta.transaction.Transactional
@@ -18,7 +19,12 @@ class DiaryEventHandler(
 
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     fun createHandler(event: DiaryCreateEvent) {
-        diaryRagUseCase.preprocessing(event.content)
+        diaryRagUseCase.preprocessing(DiaryRagPreprocessingCommand(
+            content = event.content,
+            diaryId = event.diaryId,
+            authorId = event.authorId,
+            writtenDate = event.writtenDate
+        ))
     }
 
 }
