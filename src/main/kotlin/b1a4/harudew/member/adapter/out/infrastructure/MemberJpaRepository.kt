@@ -1,4 +1,4 @@
-package b1a4.harudew.member.adapter.infra
+package b1a4.harudew.member.adapter.out.infrastructure
 
 import b1a4.harudew.member.domain.SocialType
 import org.springframework.data.jpa.repository.JpaRepository

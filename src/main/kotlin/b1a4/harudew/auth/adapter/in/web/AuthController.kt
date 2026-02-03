@@ -7,7 +7,7 @@ import b1a4.harudew.auth.dto.TokenResponse
 import b1a4.harudew.auth.security.jwt.JwtTokenProvider
 import b1a4.harudew.global.exception.BusinessException
 import b1a4.harudew.global.exception.ErrorCode
-import b1a4.harudew.member.adapter.infra.MemberJpaRepository
+import b1a4.harudew.member.adapter.out.infrastructure.MemberJpaRepository
 import io.github.oshai.kotlinlogging.KotlinLogging
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Profile

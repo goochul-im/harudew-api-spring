@@ -1,4 +1,4 @@
-package b1a4.harudew.member.adapter.infra
+package b1a4.harudew.member.application.port.out
 
 import b1a4.harudew.member.domain.Member
 

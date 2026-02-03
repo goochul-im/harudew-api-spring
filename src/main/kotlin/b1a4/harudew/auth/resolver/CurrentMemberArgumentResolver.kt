@@ -4,7 +4,7 @@ import b1a4.harudew.auth.annotation.CurrentMember
 import b1a4.harudew.auth.security.jwt.JwtPrincipal
 import b1a4.harudew.global.exception.BusinessException
 import b1a4.harudew.global.exception.ErrorCode
-import b1a4.harudew.member.adapter.infra.MemberJpaRepository
+import b1a4.harudew.member.adapter.out.infrastructure.MemberJpaRepository
 import b1a4.harudew.member.domain.Member
 import org.springframework.core.MethodParameter
 import org.springframework.security.core.context.SecurityContextHolder

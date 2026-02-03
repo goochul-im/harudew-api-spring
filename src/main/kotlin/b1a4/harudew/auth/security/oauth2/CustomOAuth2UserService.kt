@@ -1,7 +1,7 @@
 package b1a4.harudew.auth.security.oauth2
 
-import b1a4.harudew.member.adapter.infra.MemberEntity
-import b1a4.harudew.member.adapter.infra.MemberJpaRepository
+import b1a4.harudew.member.adapter.out.infrastructure.MemberEntity
+import b1a4.harudew.member.adapter.out.infrastructure.MemberJpaRepository
 import b1a4.harudew.member.domain.Member
 import io.github.oshai.kotlinlogging.KotlinLogging
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService

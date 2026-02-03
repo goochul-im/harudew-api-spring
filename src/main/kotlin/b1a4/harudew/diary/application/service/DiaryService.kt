@@ -16,7 +16,7 @@ import b1a4.harudew.diary.domain.model.Diary
 import b1a4.harudew.global.event.DomainEventPublisherPort
 import b1a4.harudew.global.infrastructure.storage.FileUploadRequest
 import b1a4.harudew.global.infrastructure.storage.StorageClientPort
-import b1a4.harudew.member.adapter.infra.MemberRepository
+import b1a4.harudew.member.application.port.out.MemberRepository
 import b1a4.harudew.member.domain.Member
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async

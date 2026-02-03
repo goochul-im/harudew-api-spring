@@ -4,4 +4,5 @@ interface SentenceVectorPort {
 
     fun save(request: SaveSentenceRequest)
 
+    fun search(query: SearchSentenceQuery): List<SearchSentenceResponse>
 }
