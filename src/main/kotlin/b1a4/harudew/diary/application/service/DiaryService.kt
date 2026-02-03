@@ -59,7 +59,10 @@ class DiaryService(
         eventPublisher.publish(
             DiaryCreateEvent(
                 saveDiary.id!!,
-                analysisResult
+                command.content,
+                analysisResult = analysisResult,
+                authorId = authorId,
+                writtenDate = LocalDate.now(),
             )
         )
     }
