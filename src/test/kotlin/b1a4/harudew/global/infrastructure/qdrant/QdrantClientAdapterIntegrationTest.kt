@@ -24,10 +24,6 @@ import java.util.UUID
 @IntegrationTest
 @SpringBootTest(classes = [QdrantClientAdapterIntegrationTest.TestConfig::class])
 @Import(QdrantConfig::class)
-@TestPropertySource(properties = [
-    "qdrant.host=goochul.iptime.org",
-    "qdrant.port=6334"
-])
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class QdrantClientAdapterIntegrationTest {
 
