@@ -1,5 +1,5 @@
 package b1a4.harudew.diary.application.port.out.chunk
 
-data class ChunkResult(
+data class ChunkResponse(
     val chunks: List<String>
 )

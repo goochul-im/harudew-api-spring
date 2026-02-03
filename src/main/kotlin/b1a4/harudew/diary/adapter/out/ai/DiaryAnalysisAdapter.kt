@@ -17,7 +17,7 @@ class DiaryAnalysisAdapter(
     private val prompt: Resource
 ) : DiaryAnalysisPort {
 
-    override fun getAnalysis(content: String) : DiaryAnalysisResponse? {
+    override fun getAnalysis(content: String) : DiaryAnalysisResponse {
 
         val template = PromptTemplate(prompt)
         val renderedPrompt = template.render(mapOf("content" to content))
@@ -32,6 +32,7 @@ class DiaryAnalysisAdapter(
 
         try {
             return aiClient.fetchEntity(renderedPrompt, request, DiaryAnalysisResponse::class.java)
+                ?: throw RuntimeException()
         } catch (e: Exception) {
             throw DiaryAnalysisFailedException(
                 e,

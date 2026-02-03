@@ -5,7 +5,7 @@ import b1a4.harudew.person.dto.response.PeopleAnalysisResponse
 import b1a4.harudew.todo.adapter.dto.response.TodoAnalysisResponse
 import com.fasterxml.jackson.annotation.JsonProperty
 
-data class DiaryAnalysisResponse(
+data class DiaryAnalysisResult(
     val id: Long,
     val title: String,
     val photoPath: List<String>?,

@@ -10,6 +10,6 @@ data class CreateDiaryCommand(
     val weather: String? = null,
     val photoPath: List<String>? = null,
     val audioPath: List<String>? = null,
-    val longitude: Number? = null,
-    val latitude: Number? = null
+    val longitude: Double? = null,
+    val latitude: Double? = null
 )
