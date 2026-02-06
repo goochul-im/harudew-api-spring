@@ -1,9 +1,8 @@
 package b1a4.harudew.global.orchestration
 
 import b1a4.harudew.diary.application.port.`in`.DiaryRagPreprocessingCommand
-import b1a4.harudew.diary.application.port.`in`.DiaryRagUseCase
+import b1a4.harudew.diary.application.port.`in`.DiaryPreprocessingUseCase
 import b1a4.harudew.diary.domain.event.DiaryCreateEvent
-import jakarta.transaction.Transactional
 import org.springframework.stereotype.Component
 import org.springframework.transaction.event.TransactionPhase
 import org.springframework.transaction.event.TransactionalEventListener
@@ -14,17 +13,19 @@ import org.springframework.transaction.event.TransactionalEventListener
  */
 @Component
 class DiaryEventHandler(
-    private val diaryRagUseCase: DiaryRagUseCase
+    private val diaryPreprocessingUseCase: DiaryPreprocessingUseCase
 ) {
 
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     fun createHandler(event: DiaryCreateEvent) {
-        diaryRagUseCase.preprocessing(DiaryRagPreprocessingCommand(
-            content = event.content,
-            diaryId = event.diaryId,
-            authorId = event.authorId,
-            writtenDate = event.writtenDate
-        ))
+        diaryPreprocessingUseCase.ragPreprocessing(
+            DiaryRagPreprocessingCommand(
+                content = event.content,
+                diaryId = event.diaryId,
+                authorId = event.authorId,
+                writtenDate = event.writtenDate
+            )
+        )
     }
 
 }

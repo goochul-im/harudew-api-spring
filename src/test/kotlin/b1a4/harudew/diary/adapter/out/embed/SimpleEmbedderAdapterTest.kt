@@ -19,7 +19,7 @@ class SimpleEmbedderAdapterTest {
     lateinit var embedClient: EmbedClientPort
 
     @InjectMocks
-    lateinit var simpleEmbedderAdapter: SimpleEmbedderAdapter
+    lateinit var simpleEmbedderAdapter: KeywordEmbedderAdapter
 
     @Test
     @DisplayName("임베딩 요청 시 클라이언트를 호출하여 결과를 반환한다")
