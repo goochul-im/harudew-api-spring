@@ -2,6 +2,7 @@ package b1a4.harudew.global.infrastructure.qdrant
 
 import b1a4.harudew.global.util.UuidGenerator
 import io.qdrant.client.ConditionFactory.match
+import io.qdrant.client.ConditionFactory.matchKeyword
 import io.qdrant.client.PointIdFactory.id
 import io.qdrant.client.QdrantClient
 import io.qdrant.client.VectorsFactory.vectors
@@ -44,6 +45,7 @@ class QdrantClientAdapter(
             val filterBuilder = Common.Filter.newBuilder()
             query.filters.forEach { (key, value) ->
                 when (value) {
+                    is String -> filterBuilder.addMust(matchKeyword(key, value))
                     is Long -> filterBuilder.addMust(match(key, value))
                     is Int -> filterBuilder.addMust(match(key, value.toLong()))
                 }
@@ -70,6 +72,7 @@ class QdrantClientAdapter(
         val filterBuilder = Common.Filter.newBuilder()
         filter.forEach { (key, value) ->
             when (value) {
+                is String -> filterBuilder.addMust(matchKeyword(key, value))
                 is Long -> filterBuilder.addMust(match(key, value))
                 is Int -> filterBuilder.addMust(match(key, value.toLong()))
             }

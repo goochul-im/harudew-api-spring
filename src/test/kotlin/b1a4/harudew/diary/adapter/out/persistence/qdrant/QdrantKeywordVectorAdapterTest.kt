@@ -84,7 +84,7 @@ class QdrantKeywordVectorAdapterTest {
     @DisplayName("키워드를 Qdrant에 저장하고 검색할 수 있다")
     fun `키워드 저장 및 검색 통합 테스트`() {
         // given
-        val testAuthorId = System.currentTimeMillis()
+        val testAuthorId = "test-author-${System.currentTimeMillis()}"
         val testDiaryId = 1L
         val testKeyword = "테스트키워드_${UUID.randomUUID()}"
         val testVector = generateTestVector(768)
