@@ -1,6 +1,6 @@
 package b1a4.harudew.diary.application.port.`in`
 
-import b1a4.harudew.diary.adapter.dto.response.DiaryAnalysisResponse
+import b1a4.harudew.diary.adapter.dto.response.DiaryAnalysisResult
 import b1a4.harudew.diary.adapter.dto.response.DiaryResponse
 import b1a4.harudew.diary.adapter.dto.response.DiaryDetailResponse
 import b1a4.harudew.diary.adapter.dto.response.DiaryPageResponse
@@ -10,7 +10,7 @@ import java.time.LocalDate
 
 interface DiaryQueryUseCase {
 
-    fun findById(diaryId: Long, member: Member): DiaryAnalysisResponse
+    fun findById(diaryId: Long, member: Member): DiaryAnalysisResult
 
     fun findJsonById(diaryId: Long, member: Member): DiaryDetailResponse
 

@@ -2,7 +2,7 @@ package b1a4.harudew.diary.adapter.out.persistence.qdrant
 
 import b1a4.harudew.annotation.IntegrationTest
 import b1a4.harudew.diary.application.port.out.vector.ContentVectorWrapper
-import b1a4.harudew.diary.application.port.out.vector.keyword.SaveKeywordReqeust
+import b1a4.harudew.diary.application.port.out.vector.keyword.SaveKeywordRequest
 import b1a4.harudew.diary.application.port.out.vector.keyword.SearchKeywordQuery
 import io.qdrant.client.QdrantClient
 import io.qdrant.client.grpc.Collections
@@ -84,7 +84,7 @@ class QdrantKeywordVectorAdapterTest {
     @DisplayName("키워드를 Qdrant에 저장하고 검색할 수 있다")
     fun `키워드 저장 및 검색 통합 테스트`() {
         // given
-        val testAuthorId = System.currentTimeMillis()
+        val testAuthorId = "test-author-${System.currentTimeMillis()}"
         val testDiaryId = 1L
         val testKeyword = "테스트키워드_${UUID.randomUUID()}"
         val testVector = generateTestVector(768)
@@ -92,7 +92,7 @@ class QdrantKeywordVectorAdapterTest {
         println("테스트 authorId: $testAuthorId")
         println("테스트 keyword: $testKeyword")
 
-        val saveRequest = SaveKeywordReqeust(
+        val saveRequest = SaveKeywordRequest(
             keywords = listOf(
                 ContentVectorWrapper(
                     content = testKeyword,

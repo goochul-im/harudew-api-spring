@@ -1,14 +1,14 @@
 package b1a4.harudew.diary.adapter.out.embed
 
 import b1a4.harudew.diary.adapter.exception.EmbeddingFailedException
-import b1a4.harudew.diary.application.port.out.embed.SimpleEmbedderPort
+import b1a4.harudew.diary.application.port.out.embed.KeywordEmbedderPort
 import b1a4.harudew.global.infrastructure.embed.EmbedClientPort
 import org.springframework.stereotype.Component
 
 @Component
-class SimpleEmbedderAdapter(
+class KeywordEmbedderAdapter(
     private val embedClient: EmbedClientPort
-) : SimpleEmbedderPort {
+) : KeywordEmbedderPort {
 
     override fun embed(content: String): List<Double> {
         try {

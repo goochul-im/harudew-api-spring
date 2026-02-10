@@ -1,9 +1,9 @@
 package b1a4.harudew.global.infrastructure.chunk
 
-import b1a4.harudew.diary.application.port.out.chunk.ChunkResult
+import b1a4.harudew.diary.application.port.out.chunk.ChunkResponse
 
 interface ChunkClientPort {
 
-    fun chunk(content: String): ChunkResult
+    fun chunk(content: String): ChunkResponse
 
 }

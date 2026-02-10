@@ -1,7 +1,7 @@
 package b1a4.harudew.diary.adapter.out.ai
 
 import b1a4.harudew.diary.adapter.exception.DiaryAnalysisFailedException
-import b1a4.harudew.diary.application.port.out.extract.DiaryKeywordExtracterPort
+import b1a4.harudew.diary.application.port.out.extract.DiaryKeywordExtractorPort
 import b1a4.harudew.diary.application.port.out.extract.KeywordExtractResponse
 import b1a4.harudew.global.infrastructure.ai.AiClientPort
 import b1a4.harudew.global.infrastructure.ai.AiModelRequest
@@ -11,13 +11,13 @@ import org.springframework.core.io.Resource
 import org.springframework.stereotype.Component
 
 @Component
-class DiaryKeywordExtracterAdapter(
+class DiaryKeywordExtractorAdapter(
     private val aiClient: AiClientPort,
     @Value("classpath:/prompts/keyword-extract.st")
     private val prompt: Resource
-) : DiaryKeywordExtracterPort {
+) : DiaryKeywordExtractorPort {
 
-    override fun extract(content: String): KeywordExtractResponse? {
+    override fun extract(content: String): KeywordExtractResponse {
         val template = PromptTemplate(prompt)
         val renderedPrompt = template.render(mapOf("content" to content))
 
@@ -31,6 +31,7 @@ class DiaryKeywordExtracterAdapter(
 
         try {
             return aiClient.fetchEntity(renderedPrompt, request, KeywordExtractResponse::class.java)
+                ?: throw RuntimeException("Could not extract response from AiModel")
         } catch (e: Exception) {
             throw DiaryAnalysisFailedException(
                 e,

@@ -18,7 +18,7 @@ class DiaryTaggingAdapter(
     private val prompt: Resource
 ) : DiaryTaggingPort {
 
-    override fun tag(content: String): AiDiaryTaggingResponse? {
+    override fun tag(content: String): AiDiaryTaggingResponse {
         val template = PromptTemplate(prompt)
         val renderedPrompt = template.render(mapOf("content" to content))
 
@@ -31,7 +31,11 @@ class DiaryTaggingAdapter(
         )
 
         try {
-            return aiClient.fetchEntity(renderedPrompt, request, AiDiaryTaggingResponse::class.java)
+            return aiClient.fetchEntity(
+                renderedPrompt,
+                request,
+                AiDiaryTaggingResponse::class.java)
+                ?: throw RuntimeException("Failed to fetch tag")
         } catch (e: Exception) {
             throw DiaryTaggingFailedException(
                 e,

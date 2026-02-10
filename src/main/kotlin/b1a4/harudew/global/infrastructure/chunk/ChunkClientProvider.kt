@@ -1,6 +1,6 @@
 package b1a4.harudew.global.infrastructure.chunk
 
-import b1a4.harudew.diary.application.port.out.chunk.ChunkResult
+import b1a4.harudew.diary.application.port.out.chunk.ChunkResponse
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 import org.springframework.web.client.RestClient
@@ -14,7 +14,7 @@ class ChunkClientProvider(
 
     private val restClient = restClientBuilder.build()
 
-    override fun chunk(content: String): ChunkResult {
+    override fun chunk(content: String): ChunkResponse {
         val response =
             restClient.post()
                 .uri(parserUrl)
@@ -22,7 +22,7 @@ class ChunkClientProvider(
                 .retrieve()
                 .body(ParserRawResponse::class.java)
 
-        return ChunkResult(response!!.sentences)
+        return ChunkResponse(response!!.sentences)
     }
 
     private data class ParserRawRequest(

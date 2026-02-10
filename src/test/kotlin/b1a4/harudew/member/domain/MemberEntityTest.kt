@@ -1,6 +1,6 @@
 package b1a4.harudew.member.domain
 
-import b1a4.harudew.member.adapter.infra.MemberEntity
+import b1a4.harudew.member.adapter.out.infrastructure.MemberEntity
 import org.assertj.core.api.Assertions.*
 import java.time.LocalDate
 import kotlin.test.Test

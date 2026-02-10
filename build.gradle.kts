@@ -51,6 +51,8 @@ dependencies {
     testImplementation("org.awaitility:awaitility-kotlin:4.2.0")
     // aws s3 (Spring Cloud AWS for Spring Boot 3.x)
     implementation("io.awspring.cloud:spring-cloud-aws-starter-s3:3.3.1")
+    //코루틴
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core")
 }
 
 kotlin {

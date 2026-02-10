@@ -20,18 +20,16 @@ import java.time.LocalDateTime
  * @param metaData : 이 일기가 분석된 json
  */
 class Diary(
-    val id: Long,
+    val id: Long? = null,
     val author: Member,
-    val createAt: LocalDateTime,
     val writtenDate: LocalDate,
     val content: String,
-    val title: String,
-    val weather: String,
+    val title: String = "diary title",
+    val weather: String = "NONE",
     val photoPath: List<String>,
     val audioPath: List<String>,
-    val isBookmark: Boolean,
-    val latitude: Double,
-    val longitude: Double,
-    val metaData: String
-) {
-}
+    val isBookmark: Boolean = false,
+    val latitude: Double?,
+    val longitude: Double?,
+    val metaData: Any
+)

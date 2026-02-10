@@ -4,5 +4,5 @@ data class SearchKeywordQuery(
     val keyword: String,
     val diaryId: Long,
     val vector: List<Number>,
-    val authorId: Long
+    val authorId: String
 )
