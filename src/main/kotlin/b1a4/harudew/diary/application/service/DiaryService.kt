@@ -50,7 +50,7 @@ class DiaryService(
             photoPath = photoUrls,
             latitude = command.latitude,
             longitude = command.longitude,
-            audioPath = emptyList(),
+            audioPath = emptyList(), // not yet implemented
             metaData = analysisResult,
             content = command.content,
         )
