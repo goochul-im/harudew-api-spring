@@ -43,5 +43,7 @@ data class ProblemAnalysis(
 data class Reflection(
     val achievements: List<String>,
     val shortcomings: List<String>,
-    val todo: List<String>
+    val todo: List<String>,
+    @JsonProperty("tomorrow_mindset")
+    val tomorrowMindSet: String? = null
 )
