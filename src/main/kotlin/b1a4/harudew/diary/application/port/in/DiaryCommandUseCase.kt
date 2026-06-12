@@ -12,8 +12,4 @@ interface DiaryCommandUseCase {
         audios: List<MultipartFile>?
     ): Long
 
-    fun delete(diaryId: Long)
-
-    fun toggleBookmark(diaryId: Long)
-
 }

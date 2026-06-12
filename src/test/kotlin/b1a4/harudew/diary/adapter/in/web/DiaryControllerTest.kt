@@ -1,8 +1,17 @@
 package b1a4.harudew.diary.adapter.`in`.web
 
+import b1a4.harudew.auth.annotation.CurrentMember
 import b1a4.harudew.auth.annotation.MemberId
 import b1a4.harudew.diary.adapter.dto.request.CreateDiaryCommand
+import b1a4.harudew.diary.adapter.dto.response.BookmarkToggleResponse
+import b1a4.harudew.diary.adapter.dto.response.DiaryHomeResponse
+import b1a4.harudew.diary.adapter.dto.response.DiaryInfoFields
+import b1a4.harudew.diary.adapter.dto.response.DiaryPageResponse
+import b1a4.harudew.diary.adapter.dto.response.DiaryResponse
 import b1a4.harudew.diary.application.port.`in`.DiaryCommandUseCase
+import b1a4.harudew.diary.application.port.`in`.DiaryQueryUseCase
+import b1a4.harudew.member.domain.Member
+import b1a4.harudew.member.domain.SocialType
 import kotlinx.coroutines.runBlocking
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
@@ -17,7 +26,9 @@ import org.springframework.core.MethodParameter
 import org.springframework.http.MediaType
 import org.springframework.mock.web.MockMultipartFile
 import org.springframework.test.web.servlet.MockMvc
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import org.springframework.test.web.servlet.setup.MockMvcBuilders
@@ -30,14 +41,23 @@ import java.time.LocalDate
 class DiaryControllerTest {
 
     private lateinit var diaryCommandUseCase: DiaryCommandUseCase
+    private lateinit var diaryQueryUseCase: DiaryQueryUseCase
     private lateinit var mockMvc: MockMvc
+    private val member = Member(
+        id = "member-1",
+        email = "member@test.local",
+        nickname = "테스터",
+        socialType = SocialType.GOOGLE,
+        character = "test"
+    )
 
     @BeforeEach
     fun setUp() {
         diaryCommandUseCase = mock()
+        diaryQueryUseCase = mock()
         mockMvc = MockMvcBuilders
-            .standaloneSetup(DiaryController(diaryCommandUseCase))
-            .setCustomArgumentResolvers(FixedMemberIdResolver("member-1"))
+            .standaloneSetup(DiaryController(diaryCommandUseCase, diaryQueryUseCase), MapController(diaryQueryUseCase))
+            .setCustomArgumentResolvers(FixedMemberResolver(member))
             .build()
     }
 
@@ -89,12 +109,62 @@ class DiaryControllerTest {
         assertThat(commandCaptor.firstValue.longitude).isEqualTo(126.978)
     }
 
-    private class FixedMemberIdResolver(
-        private val memberId: String
+    @Test
+    @DisplayName("GET /diary/home: 프론트 홈 목록 계약을 반환한다")
+    fun `home returns frontend list contract`() {
+        // given
+        whenever(diaryQueryUseCase.findAll(member, 0L, 10)).thenReturn(
+            DiaryPageResponse(
+                item = DiaryHomeResponse(
+                    diaries = listOf(
+                        DiaryResponse(
+                            TestDiaryInfoFields(
+                                diaryId = 10L,
+                                writtenDate = LocalDate.of(2026, 6, 12),
+                                content = "오늘은 산책했다.",
+                                isBookmarked = true,
+                                latitude = 37.5,
+                                longitude = 127.0
+                            )
+                        )
+                    ),
+                    continuousWritingDate = 1,
+                    totalDiaryCount = 1,
+                    emotionCountByMonth = 1
+                ),
+                hasMore = false,
+                nextCursor = 10L
+            )
+        )
+
+        // when & then
+        mockMvc.perform(get("/diary/home").param("cursor", "0").param("limit", "10"))
+            .andExpect(status().isOk)
+            .andExpect(jsonPath("$.item.diaries[0].diaryId").value(10))
+            .andExpect(jsonPath("$.item.diaries[0].isBookmarked").value(true))
+            .andExpect(jsonPath("$.hasMore").value(false))
+    }
+
+    @Test
+    @DisplayName("PATCH /diary/bookmark/{id}: 북마크 토글 결과를 반환한다")
+    fun `toggle bookmark returns bookmark contract`() {
+        // given
+        whenever(diaryQueryUseCase.toggleBookmark(10L, member)).thenReturn(BookmarkToggleResponse(10L, true))
+
+        // when & then
+        mockMvc.perform(patch("/diary/bookmark/10"))
+            .andExpect(status().isOk)
+            .andExpect(jsonPath("$.id").value(10))
+            .andExpect(jsonPath("$.isBookmarked").value(true))
+    }
+
+    private class FixedMemberResolver(
+        private val member: Member
     ) : HandlerMethodArgumentResolver {
 
         override fun supportsParameter(parameter: MethodParameter): Boolean {
-            return parameter.hasParameterAnnotation(MemberId::class.java)
+            return parameter.hasParameterAnnotation(MemberId::class.java) ||
+                parameter.hasParameterAnnotation(CurrentMember::class.java)
         }
 
         override fun resolveArgument(
@@ -103,7 +173,23 @@ class DiaryControllerTest {
             webRequest: NativeWebRequest,
             binderFactory: WebDataBinderFactory?
         ): Any {
-            return memberId
+            return if (parameter.hasParameterAnnotation(MemberId::class.java)) member.id else member
         }
     }
+
+    private data class TestDiaryInfoFields(
+        override val diaryId: Long,
+        override val title: String = "테스트 일기",
+        override val writtenDate: LocalDate,
+        override val content: String,
+        override val photoPath: List<String>? = emptyList(),
+        override val audioPath: List<String>? = emptyList(),
+        override val isBookmarked: Boolean,
+        override val latitude: Number?,
+        override val longitude: Number?,
+        override val activities: List<String>? = listOf("산책"),
+        override val emotions: List<String>? = listOf("행복"),
+        override val people: List<String>? = emptyList(),
+        override val targets: List<String>? = emptyList()
+    ) : DiaryInfoFields
 }

@@ -14,14 +14,14 @@ data class DiaryDetailResponse(
     val people: List<PeopleAnalysisResponse>,
     val content: String,
     val emotions: List<EmotionAnalysisResponse>,
-    val latitude: Float,
-    val longitude: Float,
+    val latitude: Double?,
+    val longitude: Double?,
     val stressWarning: Boolean,
     val anxietyWarning: Boolean,
     val depressionWarning: Boolean,
-    val recommendRoutine: RecommendRoutineResponse,
+    val recommendRoutine: RecommendRoutineResponse?,
     val beforeDiaryScores: DiaryEmotionScoreResponse,
-    val analysis: JsonResponse
+    val analysis: Any
 )
 
 /**
@@ -38,7 +38,7 @@ data class JsonResponse(
 )
 
 data class JsonReflectionResponse(
-    val achievement: List<String>,
+    val achievements: List<String>,
     val shortcomings: List<String>,
     @field:JsonProperty("tomorrow_mindset")
     val tomorrowMindset: String,
@@ -49,7 +49,7 @@ data class JsonReflectionResponse(
 data class JsonActivityResponse(
     @field:JsonProperty("activity")
     val activityName: String,
-    val people: List<JsonPeopleResponse>,
+    val peoples: List<JsonPeopleResponse>,
     @field:JsonProperty("self_emotions")
     val selfEmotions: JsonEmotionResponse,
     @field:JsonProperty("state_emotions")
@@ -66,7 +66,8 @@ data class JsonPeopleResponse(
 
 data class JsonEmotionResponse(
     val emotion: List<String>,
-    val intensity: List<Int>
+    @field:JsonProperty("emotion_intensity")
+    val emotionIntensity: List<Int>
 )
 
 data class JsonProblemAnalysis(

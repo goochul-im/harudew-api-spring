@@ -10,9 +10,10 @@ interface DiaryInfoFields {
     val photoPath: List<String>?
     val audioPath: List<String>?
     val isBookmarked: Boolean
-    val latitude: Number
-    val longitude: Number
+    val latitude: Number?
+    val longitude: Number?
     val activities: List<String>?
-    val emotions: List<JsonEmotionResponse>?
+    val emotions: List<String>?
     val people: List<String>?
+    val targets: List<String>?
 }
