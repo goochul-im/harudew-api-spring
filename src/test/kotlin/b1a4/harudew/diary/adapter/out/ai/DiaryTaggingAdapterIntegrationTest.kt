@@ -2,13 +2,14 @@ package b1a4.harudew.diary.adapter.out.ai
 
 import b1a4.harudew.annotation.IntegrationTest
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.jupiter.api.Tag
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 
 @SpringBootTest
 @IntegrationTest
+@Disabled("실제 Bedrock 모델 호출 테스트는 모델/권한 확정 후 재활성화한다.")
 class DiaryTaggingAdapterIntegrationTest {
 
     @Autowired
