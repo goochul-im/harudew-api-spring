@@ -1,5 +1,7 @@
 package b1a4.harudew.global.orchestration
 
+import b1a4.harudew.achievement.application.port.out.DiaryAchievementRepository
+import b1a4.harudew.achievement.domain.DiaryAchievement
 import b1a4.harudew.diary.application.port.`in`.DiaryRagPreprocessingCommand
 import b1a4.harudew.diary.application.port.`in`.DiaryPreprocessingUseCase
 import b1a4.harudew.diary.application.port.out.DiaryProblemRepository
@@ -14,12 +16,15 @@ import b1a4.harudew.emotion.domain.EmotionBase
 import b1a4.harudew.emotion.domain.EmotionType
 import b1a4.harudew.person.application.port.out.DiaryPersonEmotionRepository
 import b1a4.harudew.person.domain.DiaryPersonEmotion
+import b1a4.harudew.todo.application.port.out.DiaryTodoRepository
+import b1a4.harudew.todo.domain.DiaryTodo
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.transaction.event.TransactionPhase
 import org.springframework.transaction.event.TransactionalEventListener
+import java.time.LocalDate
 
 /**
  * Diary에 관련된 부가 관심사를 이벤트 기반으로 분리해둔 클래스입니다
@@ -31,7 +36,9 @@ class DiaryEventHandler(
     private val diaryReflectionRepository: DiaryReflectionRepository,
     private val diaryProblemRepository: DiaryProblemRepository,
     private val diaryActivityEmotionRepository: DiaryActivityEmotionRepository,
-    private val diaryPersonEmotionRepository: DiaryPersonEmotionRepository
+    private val diaryPersonEmotionRepository: DiaryPersonEmotionRepository,
+    private val diaryAchievementRepository: DiaryAchievementRepository,
+    private val diaryTodoRepository: DiaryTodoRepository
 ) {
 
     private val logger = LoggerFactory.getLogger(DiaryEventHandler::class.java)
@@ -47,16 +54,23 @@ class DiaryEventHandler(
             )
         )
 
-        saveAnalysisToEntities(event.diaryId, event.analysisResult)
+        saveAnalysisToEntities(event.diaryId, event.authorId, event.writtenDate, event.analysisResult)
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    fun saveAnalysisToEntities(diaryId: Long, analysisResult: DiaryAnalysisResponse) {
+    fun saveAnalysisToEntities(
+        diaryId: Long,
+        authorId: String,
+        writtenDate: LocalDate,
+        analysisResult: DiaryAnalysisResponse
+    ) {
         try {
             saveActivityEmotions(diaryId, analysisResult)
             saveProblems(diaryId, analysisResult)
             savePersonEmotions(diaryId, analysisResult)
             saveReflection(diaryId, analysisResult)
+            saveAchievements(diaryId, analysisResult)
+            saveTodos(diaryId, authorId, writtenDate, analysisResult)
         } catch (e: Exception) {
             logger.error("분석 결과 정규화 저장 실패 (diaryId={}). metaData에 원본 보존됨.", diaryId, e)
         }
@@ -145,6 +159,39 @@ class DiaryEventHandler(
                 tomorrowMindset = reflection.tomorrowMindSet
             )
         )
+    }
+
+    private fun saveAchievements(diaryId: Long, analysisResult: DiaryAnalysisResponse) {
+        val achievements = analysisResult.reflection.achievements.map { achievement ->
+            DiaryAchievement(
+                diaryId = diaryId,
+                content = achievement
+            )
+        }
+
+        if (achievements.isNotEmpty()) {
+            diaryAchievementRepository.saveAll(achievements)
+        }
+    }
+
+    private fun saveTodos(
+        diaryId: Long,
+        authorId: String,
+        writtenDate: LocalDate,
+        analysisResult: DiaryAnalysisResponse
+    ) {
+        val todos = analysisResult.reflection.todo.map { todo ->
+            DiaryTodo(
+                diaryId = diaryId,
+                authorId = authorId,
+                content = todo,
+                createdAt = writtenDate
+            )
+        }
+
+        if (todos.isNotEmpty()) {
+            diaryTodoRepository.saveAll(todos)
+        }
     }
 
     private fun parseEmotionType(emotion: String): EmotionType? {
