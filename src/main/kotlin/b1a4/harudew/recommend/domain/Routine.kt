@@ -1,6 +1,7 @@
 package b1a4.harudew.recommend.domain
 
 import b1a4.harudew.member.domain.Member
+import com.fasterxml.jackson.annotation.JsonValue
 
 /**
  * 추천 루틴 도메인입니다
@@ -23,4 +24,8 @@ enum class RoutineType {
     STRESS,
     DEPRESSION,
     ANXIETY,
+    ;
+
+    @JsonValue
+    fun jsonValue(): String = name.lowercase()
 }
