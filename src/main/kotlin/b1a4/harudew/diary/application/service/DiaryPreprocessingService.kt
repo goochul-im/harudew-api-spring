@@ -17,9 +17,11 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.runBlocking
+import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Component
 
 @Component
+@Profile("!local & !test")
 class DiaryPreprocessingService(
     private val diaryChunkPort: DiaryChunkPort,
     private val diaryTaggingPort: DiaryTaggingPort,

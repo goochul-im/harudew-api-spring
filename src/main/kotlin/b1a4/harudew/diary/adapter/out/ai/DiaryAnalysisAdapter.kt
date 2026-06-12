@@ -8,9 +8,11 @@ import b1a4.harudew.global.infrastructure.ai.AiModelRequest
 import org.springframework.ai.chat.prompt.PromptTemplate
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.core.io.Resource
+import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Component
 
 @Component
+@Profile("!local & !test")
 class DiaryAnalysisAdapter(
     private val aiClient: AiClientPort,
     @Value("classpath:/prompts/diary-analysis.st")
