@@ -75,6 +75,10 @@ class HttpCookieOAuth2AuthorizationRequestRepository : AuthorizationRequestRepos
         deleteCookie(request, response, REDIRECT_URI_PARAM_COOKIE_NAME)
     }
 
+    fun getRedirectUriAfterLogin(request: HttpServletRequest): String? {
+        return getCookie(request, REDIRECT_URI_PARAM_COOKIE_NAME)?.value
+    }
+
     private fun getCookie(request: HttpServletRequest, name: String): Cookie? {
         return request.cookies?.find { it.name == name }
     }

@@ -60,7 +60,11 @@ class OAuth2SuccessHandler(
         // refreshTokenRepository.save(RefreshToken(member.id, refreshToken, ttl))
 
         // 리다이렉트 URL 생성
-        val targetUrl = buildRedirectUrl(accessToken, refreshToken)
+        val targetUrl = buildRedirectUrl(
+            accessToken = accessToken,
+            refreshToken = refreshToken,
+            redirectUriAfterLogin = cookieAuthorizationRequestRepository.getRedirectUriAfterLogin(request)
+        )
 
         // 확장: 토큰을 쿠키로 전송하려면 여기서 쿠키 설정
         // setTokenCookies(response, accessToken, refreshToken)
@@ -80,8 +84,12 @@ class OAuth2SuccessHandler(
      * - accessToken: 메모리에 저장 (XSS 취약점 주의)
      * - refreshToken: HttpOnly 쿠키로 전송
      */
-    private fun buildRedirectUrl(accessToken: String, refreshToken: String): String {
-        return UriComponentsBuilder.fromUriString(redirectUri)
+    private fun buildRedirectUrl(
+        accessToken: String,
+        refreshToken: String,
+        redirectUriAfterLogin: String?
+    ): String {
+        return UriComponentsBuilder.fromUriString(redirectUriAfterLogin ?: redirectUri)
             .queryParam("access", accessToken)
             .queryParam("refresh", refreshToken)
             .queryParam("expiresIn", accessTokenExpiration / 1000) // 초 단위

@@ -78,6 +78,7 @@ class SecurityConfig(
                     .requestMatchers(
                         "/api/auth/**",           // 인증 관련 API
                         "/auth/**",             // OAuth2 리다이렉트
+                        "/oauth2/**",             // Spring Security OAuth2 시작점
                         "/login/oauth2/**",       // OAuth2 로그인
                         "/api/public/**",         // 공개 API
                         "/swagger-ui/**",         // Swagger UI

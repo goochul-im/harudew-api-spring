@@ -7,17 +7,23 @@ import b1a4.harudew.auth.dto.TokenResponse
 import b1a4.harudew.auth.security.jwt.JwtTokenProvider
 import b1a4.harudew.global.exception.BusinessException
 import b1a4.harudew.global.exception.ErrorCode
+import b1a4.harudew.member.adapter.out.infrastructure.MemberEntity
 import b1a4.harudew.member.adapter.out.infrastructure.MemberJpaRepository
+import b1a4.harudew.member.domain.Member
+import b1a4.harudew.member.domain.SocialType
 import io.github.oshai.kotlinlogging.KotlinLogging
 import org.springframework.beans.factory.annotation.Value
-import org.springframework.context.annotation.Profile
+import org.springframework.http.HttpHeaders
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestHeader
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.servlet.view.RedirectView
+import org.springframework.web.util.UriComponentsBuilder
 
 private val logger = KotlinLogging.logger {}
 
@@ -42,7 +48,7 @@ private val logger = KotlinLogging.logger {}
  * 4. OAuth2SuccessHandler에서 JWT 발급 및 프론트엔드로 리다이렉트
  */
 @RestController
-@RequestMapping("/api/auth")
+@RequestMapping(value = ["/api/auth", "/auth"])
 class AuthController(
     private val jwtTokenProvider: JwtTokenProvider,
     private val memberRepository: MemberJpaRepository,
@@ -50,6 +56,28 @@ class AuthController(
     @Value("\${jwt.access-expiration:3600000}")
     private val accessTokenExpiration: Long
 ) {
+
+    /**
+     * 프론트 호환 OAuth2 로그인 진입점.
+     *
+     * Spring Security 기본 진입점은 /oauth2/authorization/{provider} 이지만,
+     * origin-backend와 frontend는 /auth/google, /auth/kakao를 호출한다.
+     */
+    @GetMapping("/google")
+    fun googleLogin(
+        @RequestParam("state", required = false) state: String?,
+        @RequestParam("redirect_uri", required = false) redirectUri: String?
+    ): RedirectView {
+        return RedirectView(buildAuthorizationUri("google", state, redirectUri))
+    }
+
+    @GetMapping("/kakao")
+    fun kakaoLogin(
+        @RequestParam("state", required = false) state: String?,
+        @RequestParam("redirect_uri", required = false) redirectUri: String?
+    ): RedirectView {
+        return RedirectView(buildAuthorizationUri("kakao", state, redirectUri))
+    }
 
     /**
      * Access Token 갱신
@@ -68,8 +96,13 @@ class AuthController(
      * - 기존 Refresh Token은 무효화
      */
     @PostMapping("/refresh")
-    fun refreshToken(@RequestBody request: RefreshTokenRequest): ResponseEntity<RefreshTokenResponse> {
-        val refreshToken = request.refreshToken
+    fun refreshToken(
+        @RequestBody(required = false) request: RefreshTokenRequest?,
+        @RequestHeader(HttpHeaders.AUTHORIZATION, required = false) authorization: String?
+    ): ResponseEntity<RefreshTokenResponse> {
+        val refreshToken = extractBearerToken(authorization)
+            ?: request?.refreshToken
+            ?: throw BusinessException(ErrorCode.INVALID_TOKEN)
 
         // Refresh Token 유효성 검증
         if (!jwtTokenProvider.validateToken(refreshToken)) {
@@ -97,12 +130,14 @@ class AuthController(
             socialType = member.socialType,
             nickname = member.nickname
         )
+        val newRefreshToken = jwtTokenProvider.generateRefreshToken(member.id)
 
         logger.info { "토큰 갱신: memberId=$memberId" }
 
         return ResponseEntity.ok(
             RefreshTokenResponse(
                 accessToken = newAccessToken,
+                refreshToken = newRefreshToken,
                 expiresIn = accessTokenExpiration / 1000
             )
         )
@@ -121,7 +156,7 @@ class AuthController(
      * - 토큰 블랙리스트 추가
      */
     @PostMapping("/logout")
-    fun logout(@MemberId memberId: String): ResponseEntity<Map<String, String>> {
+    fun logout(@MemberId memberId: String): ResponseEntity<Map<String, Any>> {
         logger.info { "로그아웃: memberId=$memberId" }
 
         // 확장: Refresh Token 삭제
@@ -130,7 +165,12 @@ class AuthController(
         // 확장: Access Token 블랙리스트에 추가
         // tokenBlacklistRepository.add(currentAccessToken)
 
-        return ResponseEntity.ok(mapOf("message" to "로그아웃되었습니다."))
+        return ResponseEntity.ok(
+            mapOf(
+                "success" to true,
+                "message" to "로그아웃되었습니다."
+            )
+        )
     }
 
     /**
@@ -165,11 +205,9 @@ class AuthController(
      *
      * 확장: @Profile("dev") 추가하여 개발 환경에서만 활성화
      */
-    @Profile("dev", "local")
     @GetMapping("/demo")
     fun demoLogin(@RequestParam id: String): ResponseEntity<TokenResponse> {
-        val member = memberRepository.findById(id)
-            .orElseThrow { BusinessException(ErrorCode.MEMBER_NOT_FOUND) }
+        val member = findOrCreateDemoMember(id)
 
         val accessToken = jwtTokenProvider.generateAccessToken(
             memberId = member.id,
@@ -185,5 +223,56 @@ class AuthController(
                 expiresIn = accessTokenExpiration / 1000
             )
         )
+    }
+
+    private fun buildAuthorizationUri(provider: String, state: String?, redirectUri: String?): String {
+        val frontendRedirectUri = redirectUri ?: state
+
+        val builder = UriComponentsBuilder
+            .fromPath("/oauth2/authorization/{provider}")
+
+        if (!frontendRedirectUri.isNullOrBlank()) {
+            builder.queryParam("redirect_uri", frontendRedirectUri)
+        }
+
+        return builder
+            .buildAndExpand(provider)
+            .toUriString()
+    }
+
+    private fun extractBearerToken(authorization: String?): String? {
+        return authorization
+            ?.takeIf { it.startsWith(BEARER_PREFIX) }
+            ?.substring(BEARER_PREFIX.length)
+    }
+
+    private fun findOrCreateDemoMember(id: String): MemberEntity {
+        return memberRepository.findById(id)
+            .orElseGet {
+                val member = Member(
+                    id = id,
+                    email = "$id@demo.harudew.local",
+                    nickname = demoNickname(id),
+                    socialType = SocialType.GOOGLE,
+                    character = "demo"
+                )
+                memberRepository.save(MemberEntity.fromDomain(member))
+            }
+    }
+
+    private fun demoNickname(id: String): String {
+        return when (id) {
+            "traveler" -> "여행자"
+            "lee" -> "이순신"
+            "harry" -> "해리"
+            "namul" -> "나물이"
+            "anne" -> "안네"
+            "demo" -> "데모"
+            else -> id
+        }
+    }
+
+    companion object {
+        private const val BEARER_PREFIX = "Bearer "
     }
 }

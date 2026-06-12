@@ -1,5 +1,7 @@
 package b1a4.harudew.auth.dto
 
+import com.fasterxml.jackson.annotation.JsonProperty
+
 /**
  * 로그인 성공 시 토큰 응답 DTO
  *
@@ -19,20 +21,53 @@ data class TokenResponse(
     val refreshToken: String,
     val tokenType: String = "Bearer",
     val expiresIn: Long // accessToken 만료 시간 (초)
-)
+) {
+    @get:JsonProperty("access_token")
+    val accessTokenSnake: String
+        get() = accessToken
+
+    @get:JsonProperty("refresh_token")
+    val refreshTokenSnake: String
+        get() = refreshToken
+
+    @get:JsonProperty("token_type")
+    val tokenTypeSnake: String
+        get() = tokenType
+
+    @get:JsonProperty("expires_in")
+    val expiresInSnake: Long
+        get() = expiresIn
+}
 
 /**
  * Access Token 갱신 응답 DTO
  */
 data class RefreshTokenResponse(
     val accessToken: String,
+    val refreshToken: String,
     val tokenType: String = "Bearer",
     val expiresIn: Long
-)
+) {
+    @get:JsonProperty("access_token")
+    val accessTokenSnake: String
+        get() = accessToken
+
+    @get:JsonProperty("refresh_token")
+    val refreshTokenSnake: String
+        get() = refreshToken
+
+    @get:JsonProperty("token_type")
+    val tokenTypeSnake: String
+        get() = tokenType
+
+    @get:JsonProperty("expires_in")
+    val expiresInSnake: Long
+        get() = expiresIn
+}
 
 /**
  * 토큰 갱신 요청 DTO
  */
 data class RefreshTokenRequest(
-    val refreshToken: String
+    val refreshToken: String? = null
 )

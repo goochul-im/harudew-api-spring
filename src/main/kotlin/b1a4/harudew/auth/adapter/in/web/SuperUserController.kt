@@ -32,7 +32,7 @@ private val logger = KotlinLogging.logger {}
  * }
  */
 @RestController
-@RequestMapping("/api/auth")
+@RequestMapping(value = ["/api/auth", "/auth"])
 @Profile("local", "test")
 class SuperUserController(
     private val superUserProperties: SuperUserProperties,
