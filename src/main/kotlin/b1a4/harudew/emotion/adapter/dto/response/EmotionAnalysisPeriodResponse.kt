@@ -4,9 +4,9 @@ import b1a4.harudew.emotion.domain.EmotionGroup
 import java.time.LocalDate
 
 data class EmotionAnalysisPeriodResponse(
-    val activities: ActivityEmotionSummaryResponse,
-    val people: TargetEmotionSummaryResponse,
-    val date: EmotionSummaryPeriodResponse
+    val activities: List<ActivityEmotionSummaryResponse>,
+    val people: List<TargetEmotionSummaryResponse>,
+    val date: List<EmotionSummaryPeriodResponse>
 )
 
 data class EmotionSummaryPeriodResponse(

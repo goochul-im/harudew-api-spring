@@ -9,7 +9,9 @@ data class EmotionSummaryByTargetResponse(
 )
 
 data class EmotionDetailResponse(
-    val emotion: EmotionType,
+    val emotion: String,
     val count: Int,
-    val intensity: Number
+    val intensity: Number,
+    val totalCount: Int = count,
+    val totalIntensity: Number = intensity
 )

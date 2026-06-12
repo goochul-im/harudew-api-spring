@@ -1,8 +1,7 @@
 package b1a4.harudew.emotion.adapter.dto.response
 
 data class NegativeEmotionByActivityResponse(
-    val stress : ActivityEmotionSummaryResponse,
-    val depression : ActivityEmotionSummaryResponse,
-    val anxiety : ActivityEmotionSummaryResponse,
-) {
-}
+    val stress: List<ActivityEmotionSummaryResponse>,
+    val depression: List<ActivityEmotionSummaryResponse>,
+    val anxiety: List<ActivityEmotionSummaryResponse>,
+)

@@ -1,7 +1,8 @@
 package b1a4.harudew.emotion.adapter.dto.response
 
 data class PositiveEmotionByActivityResponse(
-    val stability : ActivityEmotionSummaryResponse,
-    val bond : ActivityEmotionSummaryResponse,
-    val vitality : ActivityEmotionSummaryResponse,
+    val stability: List<ActivityEmotionSummaryResponse>,
+    val bond: List<ActivityEmotionSummaryResponse>,
+    val vitality: List<ActivityEmotionSummaryResponse>,
+    val viality: List<ActivityEmotionSummaryResponse> = vitality,
 )
