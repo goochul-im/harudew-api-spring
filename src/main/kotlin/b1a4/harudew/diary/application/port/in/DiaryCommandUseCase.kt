@@ -5,7 +5,12 @@ import org.springframework.web.multipart.MultipartFile
 
 interface DiaryCommandUseCase {
 
-    suspend fun create(authorId: String ,command : CreateDiaryCommand, photos: List<MultipartFile>?)
+    suspend fun create(
+        authorId: String,
+        command: CreateDiaryCommand,
+        photos: List<MultipartFile>?,
+        audios: List<MultipartFile>?
+    ): Long
 
     fun delete(diaryId: Long)
 

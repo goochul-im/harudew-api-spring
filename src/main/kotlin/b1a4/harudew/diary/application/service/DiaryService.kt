@@ -36,35 +36,49 @@ class DiaryService(
     private val memberRepository: MemberRepository
 ) : DiaryCommandUseCase, DiaryQueryUseCase {
 
-    override suspend fun create(authorId: String, command: CreateDiaryCommand, photos: List<MultipartFile>?) {
-        val (photoUrls, analysisResult) = coroutineScope {
+    override suspend fun create(
+        authorId: String,
+        command: CreateDiaryCommand,
+        photos: List<MultipartFile>?,
+        audios: List<MultipartFile>?
+    ): Long {
+        val uploadAndAnalysis = coroutineScope {
             val photos = async { uploadFiles(photos) }
+            val audios = async { uploadFiles(audios) }
             val diaryAnalysisResult = async { analysisDiary(command.content) }
-            photos.await() to diaryAnalysisResult.await()
+            UploadAndAnalysis(
+                photoUrls = photos.await(),
+                audioUrls = audios.await(),
+                analysisResult = diaryAnalysisResult.await()
+            )
         }
 
         val author = memberRepository.findById(authorId)
         val result = Diary(
             author = author,
-            writtenDate = LocalDate.now(),
-            photoPath = photoUrls,
+            writtenDate = command.writtenDate,
+            photoPath = uploadAndAnalysis.photoUrls,
             latitude = command.latitude,
             longitude = command.longitude,
-            audioPath = emptyList(), // not yet implemented
-            metaData = analysisResult,
+            audioPath = uploadAndAnalysis.audioUrls,
+            metaData = uploadAndAnalysis.analysisResult,
             content = command.content,
+            weather = command.weather,
         )
 
         val saveDiary = diaryRepository.save(result)
+        val diaryId = saveDiary.id ?: throw IllegalStateException("저장된 일기 ID가 없습니다.")
         eventPublisher.publish(
             DiaryCreateEvent(
-                saveDiary.id!!,
+                diaryId,
                 command.content,
-                analysisResult = analysisResult,
+                analysisResult = uploadAndAnalysis.analysisResult,
                 authorId = authorId,
-                writtenDate = LocalDate.now(),
+                writtenDate = command.writtenDate,
             )
         )
+
+        return diaryId
     }
 
     override fun delete(diaryId: Long) {
@@ -134,4 +148,10 @@ class DiaryService(
                 }
             }?.awaitAll() ?: emptyList()
         }
+
+    private data class UploadAndAnalysis(
+        val photoUrls: List<String>,
+        val audioUrls: List<String>,
+        val analysisResult: DiaryAnalysisResponse
+    )
 }
