@@ -18,7 +18,7 @@ private val logger = KotlinLogging.logger {}
 /**
  * E2E 테스트용 슈퍼유저 토큰 발급 컨트롤러
  *
- * local 또는 test 프로파일에서만 활성화됩니다.
+ * local 프로파일에서만 활성화됩니다.
  * 소셜 로그인 없이 바로 인증 토큰을 발급받을 수 있습니다.
  *
  * 사용법:
@@ -33,7 +33,7 @@ private val logger = KotlinLogging.logger {}
  */
 @RestController
 @RequestMapping(value = ["/api/auth", "/auth"])
-@Profile("local", "test")
+@Profile("local")
 class SuperUserController(
     private val superUserProperties: SuperUserProperties,
     private val jwtTokenProvider: JwtTokenProvider,

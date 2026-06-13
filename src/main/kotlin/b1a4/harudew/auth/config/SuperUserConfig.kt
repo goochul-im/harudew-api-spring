@@ -15,11 +15,11 @@ private val logger = KotlinLogging.logger {}
 /**
  * 슈퍼유저 설정
  *
- * local 또는 test 프로파일에서만 활성화됩니다.
+ * local 프로파일에서만 활성화됩니다.
  * 애플리케이션 시작 시 슈퍼유저가 DB에 존재하지 않으면 자동으로 생성합니다.
  */
 @Configuration
-@Profile("local", "test")
+@Profile("local")
 @EnableConfigurationProperties(SuperUserProperties::class)
 class SuperUserConfig {
 

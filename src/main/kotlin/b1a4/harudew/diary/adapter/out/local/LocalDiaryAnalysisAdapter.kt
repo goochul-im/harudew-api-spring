@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Component
 
 @Component
-@Profile("local", "test")
+@Profile("local")
 class LocalDiaryAnalysisAdapter : DiaryAnalysisPort {
 
     override fun getAnalysis(content: String): DiaryAnalysisResponse =

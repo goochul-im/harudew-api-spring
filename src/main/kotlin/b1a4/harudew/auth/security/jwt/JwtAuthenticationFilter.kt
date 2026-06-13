@@ -22,7 +22,7 @@ import org.springframework.web.filter.OncePerRequestFilter
  * - 특정 경로 제외: shouldNotFilter() 메서드 오버라이드
  *
  * 슈퍼유저 고정 토큰:
- * - local/test 프로파일에서 SuperUserProperties가 활성화되면
+ * - local 프로파일에서 SuperUserProperties가 활성화되면
  * - 고정 토큰으로 JWT 검증 없이 슈퍼유저로 인증됩니다.
  */
 @Component
@@ -44,7 +44,7 @@ class JwtAuthenticationFilter(
         val token = extractToken(request)
 
         if (token != null) {
-            // 슈퍼유저 고정 토큰 체크 (local/test 프로파일에서만 동작)
+            // 슈퍼유저 고정 토큰 체크 (local 프로파일에서만 동작)
             if (isSuperUserFixedToken(token)) {
                 setSuperUserAuthentication()
                 filterChain.doFilter(request, response)

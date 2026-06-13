@@ -1,0 +1,109 @@
+# ===========================================
+# Test 프로파일 설정 (실제 연동 검증 환경)
+# ===========================================
+#
+# local 프로파일은 외부 AI/전처리 호출을 우회한다.
+# test 프로파일은 실제 Bedrock, OAuth, S3, Qdrant, 외부 ML 서비스를 붙여
+# 배포 환경에 가까운 수동 검증에 사용한다.
+
+spring:
+  cloud:
+    aws:
+      region:
+        static: ${AWS_REGION:ap-northeast-2}
+      credentials:
+        secret-key: ${AWS_SECRET_KEY}
+        access-key: ${AWS_ACCESS_KEY}
+
+  ai:
+    bedrock:
+      aws:
+        region: ${AWS_BEDROCK_REGION:${AWS_REGION:ap-northeast-2}}
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    database-platform: ${JPA_DIALECT:org.hibernate.dialect.H2Dialect}
+
+  datasource:
+    url: ${DB_URL:jdbc:h2:mem:testdb}
+    driver-class-name: ${DB_DRIVER:org.h2.Driver}
+    username: ${DB_USERNAME:sa}
+    password: ${DB_PASSWORD:}
+
+  h2:
+    console:
+      enabled: ${H2_CONSOLE_ENABLED:true}
+      path: /h2-console
+
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: ${GOOGLE_CLIENT_ID}
+            client-secret: ${GOOGLE_CLIENT_SECRET}
+            scope:
+              - email
+              - profile
+            redirect-uri: "{baseUrl}/auth/{registrationId}/redirect"
+
+          kakao:
+            client-id: ${KAKAO_CLIENT_ID}
+            client-secret: ${KAKAO_CLIENT_SECRET}
+            client-authentication-method: client_secret_post
+            authorization-grant-type: authorization_code
+            redirect-uri: "{baseUrl}/auth/{registrationId}/redirect"
+            scope:
+              - profile_nickname
+              - account_email
+            client-name: Kakao
+
+        provider:
+          kakao:
+            authorization-uri: https://kauth.kakao.com/oauth/authorize
+            token-uri: https://kauth.kakao.com/oauth/token
+            user-info-uri: https://kapi.kakao.com/v2/user/me
+            user-name-attribute: id
+
+oauth2:
+  redirect-uri: ${OAUTH2_REDIRECT_URI:http://localhost:5173/getaccess}
+  failure-redirect-uri: ${OAUTH2_FAILURE_REDIRECT_URI:http://localhost:5173/login}
+
+jwt:
+  secret: ${JWT_SECRET}
+  access-expiration: ${JWT_ACCESS_EXPIRATION:3600000}
+  refresh-expiration: ${JWT_REFRESH_EXPIRATION:86400000}
+
+parser:
+  model:
+    url: ${PARSER_MODEL_URL:http://goochul.iptime.org:5006/split}
+
+embed:
+  simple:
+    url: ${EMBED_SIMPLE_URL:http://goochul.iptime.org:5004/embed}
+  cross:
+    url: ${EMBED_CROSS_URL:http://goochul.iptime.org:5004/rerank}
+  dual:
+    url: ${EMBED_DUAL_URL:http://goochul.iptime.org:5001/embed}
+
+qdrant:
+  host: ${QDRANT_HOST:goochul.iptime.org}
+  port: ${QDRANT_PORT:6334}
+  collection:
+    sentence_name: ${QDRANT_SENTENCE_COLLECTION:diary_sentence}
+    keyword_name: ${QDRANT_KEYWORD_COLLECTION:keyword}
+
+cluster:
+  model:
+    url: ${CLUSTER_MODEL_URL:http://goochul.iptime.org:5004/cluster}
+
+aws:
+  s3:
+    access-key: ${AWS_ACCESS_KEY}
+    secret-key: ${AWS_SECRET_KEY}
+    bucket-name: ${AWS_BUCKET_NAME}
+    region: ${AWS_S3_REGION:${AWS_REGION:ap-northeast-2}}
+
+encrypt:
+  secret: ${ENCRYPT_SECRET}

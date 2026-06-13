@@ -6,11 +6,11 @@ import org.springframework.boot.context.properties.ConfigurationProperties
 /**
  * 테스트용 슈퍼유저 설정
  *
- * local 또는 test 프로파일에서만 활성화됩니다.
+ * local 프로파일에서만 활성화됩니다.
  * E2E 테스트 시 소셜 로그인 없이 바로 인증된 상태로 API를 호출할 수 있습니다.
  *
  * 사용법:
- * 1. application-local.yml 또는 application.yml (test)에 설정 추가
+ * 1. application-local.yml에 설정 추가
  * 2. GET /api/auth/super-token 호출하여 토큰 발급
  * 3. Authorization: Bearer {token} 헤더로 API 호출
  *
