@@ -5,4 +5,6 @@ import b1a4.harudew.achievement.domain.DiaryAchievement
 interface DiaryAchievementRepository {
 
     fun saveAll(diaryAchievements: List<DiaryAchievement>): List<DiaryAchievement>
+
+    fun findByDiaryIds(diaryIds: List<Long>): List<DiaryAchievement>
 }

@@ -35,5 +35,5 @@ class StrengthController(
         @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) startDate: LocalDate,
         @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) endDate: LocalDate
     ): StrengthResponse =
-        analysisAggregationService.strength(member.id)
+        analysisAggregationService.strength(member.id, startDate, endDate)
 }

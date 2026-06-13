@@ -1,7 +1,7 @@
 package b1a4.harudew.achievement.adapter.dto.response
 
 data class AllAchievementResponse(
-    val achievement: List<AchievementResponse>
+    val achievements: List<AchievementResponse>
 )
 
 data class AchievementResponse(

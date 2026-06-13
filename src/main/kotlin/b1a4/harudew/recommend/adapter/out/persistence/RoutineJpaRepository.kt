@@ -23,4 +23,6 @@ interface RoutineJpaRepository : JpaRepository<RoutineEntity, Long> {
         @Param("id") id: Long,
         @Param("memberId") memberId: String
     ): Optional<RoutineEntity>
+
+    fun existsByMember_IdAndRoutineTypeAndContent(memberId: String, routineType: RoutineType, content: String): Boolean
 }

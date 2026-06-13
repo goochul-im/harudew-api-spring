@@ -19,6 +19,7 @@ import b1a4.harudew.emotion.domain.EmotionBase
 import b1a4.harudew.emotion.domain.EmotionType
 import b1a4.harudew.person.application.port.out.DiaryPersonEmotionRepository
 import b1a4.harudew.person.domain.DiaryPersonEmotion
+import b1a4.harudew.recommend.application.service.RoutineService
 import b1a4.harudew.todo.application.port.out.DiaryTodoRepository
 import b1a4.harudew.todo.domain.DiaryTodo
 import org.assertj.core.api.Assertions.assertThat
@@ -42,6 +43,7 @@ class DiaryEventHandlerTest {
     @Mock lateinit var diaryPersonEmotionRepository: DiaryPersonEmotionRepository
     @Mock lateinit var diaryAchievementRepository: DiaryAchievementRepository
     @Mock lateinit var diaryTodoRepository: DiaryTodoRepository
+    @Mock lateinit var routineService: RoutineService
 
     lateinit var handler: DiaryEventHandler
 
@@ -54,7 +56,8 @@ class DiaryEventHandlerTest {
             diaryActivityEmotionRepository = diaryActivityEmotionRepository,
             diaryPersonEmotionRepository = diaryPersonEmotionRepository,
             diaryAchievementRepository = diaryAchievementRepository,
-            diaryTodoRepository = diaryTodoRepository
+            diaryTodoRepository = diaryTodoRepository,
+            routineService = routineService
         )
     }
 

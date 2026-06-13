@@ -32,13 +32,13 @@ class MemberEntity(
     val character: String,
 
     @Column(name = "stress_test_date", nullable = true)
-    val lastStressTestDate: LocalDate? = null,
+    var lastStressTestDate: LocalDate? = null,
 
     @Column(name = "anxiety_test_date", nullable = true)
-    val lastAnxietyTestDate: LocalDate? = null,
+    var lastAnxietyTestDate: LocalDate? = null,
 
     @Column(name = "depression_test_date", nullable = true)
-    val lastDepressionTestDate: LocalDate? = null
+    var lastDepressionTestDate: LocalDate? = null
 
 ) {
 

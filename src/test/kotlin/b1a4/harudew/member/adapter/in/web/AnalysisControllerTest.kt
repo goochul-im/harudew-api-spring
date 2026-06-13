@@ -11,6 +11,7 @@ import b1a4.harudew.emotion.domain.EmotionGroup
 import b1a4.harudew.member.adapter.dto.response.EmotionBaseAnalysis
 import b1a4.harudew.member.adapter.dto.response.EmotionBaseAnalysisRes
 import b1a4.harudew.member.adapter.dto.response.StrengthResponse
+import b1a4.harudew.member.adapter.out.infrastructure.MemberJpaRepository
 import b1a4.harudew.member.application.service.AnalysisAggregationService
 import b1a4.harudew.member.domain.Member
 import b1a4.harudew.member.domain.SocialType
@@ -33,6 +34,7 @@ import org.springframework.web.method.support.ModelAndViewContainer
 class AnalysisControllerTest {
 
     private lateinit var aggregationService: AnalysisAggregationService
+    private lateinit var memberJpaRepository: MemberJpaRepository
     private lateinit var mockMvc: MockMvc
 
     private val member = Member(
@@ -46,9 +48,10 @@ class AnalysisControllerTest {
     @BeforeEach
     fun setUp() {
         aggregationService = mock()
+        memberJpaRepository = mock()
         mockMvc = MockMvcBuilders
             .standaloneSetup(
-                MemberController(aggregationService),
+                MemberController(aggregationService, memberJpaRepository),
                 StrengthController(aggregationService),
                 EmotionController(aggregationService),
                 RelationController(aggregationService)

@@ -3,6 +3,7 @@ package b1a4.harudew.global.orchestration
 import b1a4.harudew.achievement.application.port.out.DiaryAchievementRepository
 import b1a4.harudew.achievement.domain.DiaryAchievement
 import b1a4.harudew.diary.application.port.`in`.DiaryRagPreprocessingCommand
+import b1a4.harudew.diary.application.port.`in`.DiaryKeywordPreprocessingCommand
 import b1a4.harudew.diary.application.port.`in`.DiaryPreprocessingUseCase
 import b1a4.harudew.diary.application.port.out.DiaryProblemRepository
 import b1a4.harudew.diary.application.port.out.DiaryReflectionRepository
@@ -18,6 +19,7 @@ import b1a4.harudew.person.application.port.out.DiaryPersonEmotionRepository
 import b1a4.harudew.person.domain.DiaryPersonEmotion
 import b1a4.harudew.todo.application.port.out.DiaryTodoRepository
 import b1a4.harudew.todo.domain.DiaryTodo
+import b1a4.harudew.recommend.application.service.RoutineService
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Propagation
@@ -38,23 +40,46 @@ class DiaryEventHandler(
     private val diaryActivityEmotionRepository: DiaryActivityEmotionRepository,
     private val diaryPersonEmotionRepository: DiaryPersonEmotionRepository,
     private val diaryAchievementRepository: DiaryAchievementRepository,
-    private val diaryTodoRepository: DiaryTodoRepository
+    private val diaryTodoRepository: DiaryTodoRepository,
+    private val routineService: RoutineService
 ) {
 
     private val logger = LoggerFactory.getLogger(DiaryEventHandler::class.java)
 
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     fun createHandler(event: DiaryCreateEvent) {
-        diaryPreprocessingUseCase.ragPreprocessing(
-            DiaryRagPreprocessingCommand(
-                content = event.content,
-                diaryId = event.diaryId,
-                authorId = event.authorId,
-                writtenDate = event.writtenDate
+        runPostCommitStep("RAG 전처리", event.diaryId) {
+            diaryPreprocessingUseCase.ragPreprocessing(
+                DiaryRagPreprocessingCommand(
+                    content = event.content,
+                    diaryId = event.diaryId,
+                    authorId = event.authorId,
+                    writtenDate = event.writtenDate
+                )
             )
-        )
+        }
+        runPostCommitStep("키워드 전처리", event.diaryId) {
+            diaryPreprocessingUseCase.keywordPreprocessing(
+                DiaryKeywordPreprocessingCommand(
+                    content = event.content,
+                    diaryId = event.diaryId,
+                    authorId = event.authorId
+                )
+            )
+        }
 
         saveAnalysisToEntities(event.diaryId, event.authorId, event.writtenDate, event.analysisResult)
+        runPostCommitStep("루틴 트리거 생성", event.diaryId) {
+            routineService.createTriggersFromAnalysis(event.authorId, event.analysisResult)
+        }
+    }
+
+    private fun runPostCommitStep(label: String, diaryId: Long, action: () -> Unit) {
+        try {
+            action()
+        } catch (e: Exception) {
+            logger.error("{} 실패 (diaryId={}). 핵심 일기 저장 흐름은 유지합니다.", label, diaryId, e)
+        }
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)

@@ -28,10 +28,13 @@ import b1a4.harudew.emotion.domain.toEmotionGroup
 import b1a4.harudew.member.adapter.dto.response.EmotionBaseAnalysis
 import b1a4.harudew.member.adapter.dto.response.EmotionBaseAnalysisRes
 import b1a4.harudew.member.adapter.dto.response.EmotionGroups
+import b1a4.harudew.member.adapter.dto.response.EmotionSummaryWeekdayRes
+import b1a4.harudew.member.adapter.dto.response.Emotions
 import b1a4.harudew.member.adapter.dto.response.MemberSummaryRes
 import b1a4.harudew.member.adapter.dto.response.PerDate
 import b1a4.harudew.member.adapter.dto.response.StrengthResponse
 import org.springframework.stereotype.Service
+import java.time.DayOfWeek
 import java.time.LocalDate
 
 @Service
@@ -87,6 +90,34 @@ class AnalysisAggregationService(
             anxietyWarning = (totals[EmotionGroup.불안] ?: 0) >= 30,
             period = period,
             emotionPerDate = perDate
+        )
+    }
+
+    fun weekdayEmotion(memberId: String, period: Int): EmotionSummaryWeekdayRes {
+        val since = LocalDate.now().minusDays(period.toLong())
+        val grouped = analysisEntries(memberId)
+            .filter { (_, diary) -> !diary.writtenDate.isBefore(since) }
+            .flatMap { (analysis, diary) ->
+                allEmotionEntries(analysis).map { diary.writtenDate.dayOfWeek to it.type }
+            }
+            .groupBy({ it.first }, { it.second })
+            .mapValues { (_, emotions) ->
+                emotions.groupingBy { it }
+                    .eachCount()
+                    .map { (emotion, count) -> Emotions(emotion, count) }
+                    .sortedByDescending { it.count }
+            }
+
+        fun day(dayOfWeek: DayOfWeek): List<Emotions> = grouped[dayOfWeek] ?: emptyList()
+
+        return EmotionSummaryWeekdayRes(
+            monday = day(DayOfWeek.MONDAY),
+            tuesday = day(DayOfWeek.TUESDAY),
+            wednesday = day(DayOfWeek.WEDNESDAY),
+            thursday = day(DayOfWeek.THURSDAY),
+            friday = day(DayOfWeek.FRIDAY),
+            saturday = day(DayOfWeek.SATURDAY),
+            sunday = day(DayOfWeek.SUNDAY)
         )
     }
 
@@ -240,6 +271,18 @@ class AnalysisAggregationService(
             .filter { (_, diary) ->
                 year == null || month == null || (diary.writtenDate.year == year && diary.writtenDate.monthValue == month)
             }
+            .flatMap { (analysis, _) -> analysis.activityAnalysis.mapNotNull { it.strength.takeIf(String::isNotBlank) } }
+
+        val typeCount = strengths.groupingBy { it }.eachCount()
+        return StrengthResponse(
+            typeCount = typeCount,
+            detailCount = typeCount.mapValues { mapOf(it.key to it.value) }
+        )
+    }
+
+    fun strength(memberId: String, startDate: LocalDate, endDate: LocalDate): StrengthResponse {
+        val strengths = analysisEntries(memberId)
+            .filter { (_, diary) -> !diary.writtenDate.isBefore(startDate) && !diary.writtenDate.isAfter(endDate) }
             .flatMap { (analysis, _) -> analysis.activityAnalysis.mapNotNull { it.strength.takeIf(String::isNotBlank) } }
 
         val typeCount = strengths.groupingBy { it }.eachCount()

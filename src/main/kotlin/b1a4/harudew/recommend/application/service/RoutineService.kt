@@ -1,6 +1,10 @@
 package b1a4.harudew.recommend.application.service
 
 import b1a4.harudew.diary.application.port.out.DiaryRepository
+import b1a4.harudew.diary.application.port.out.analysis.DiaryAnalysisResponse
+import b1a4.harudew.emotion.domain.EmotionGroup
+import b1a4.harudew.emotion.domain.EmotionType
+import b1a4.harudew.emotion.domain.toEmotionGroup
 import b1a4.harudew.member.adapter.out.infrastructure.MemberJpaRepository
 import b1a4.harudew.recommend.adapter.dto.response.RecommendRoutineResponse
 import b1a4.harudew.recommend.adapter.dto.response.RoutineResponse
@@ -59,6 +63,46 @@ class RoutineService(
             type = routine.routineType,
             content = routine.content
         )
+    }
+
+    fun createTriggersFromAnalysis(memberId: String, analysis: DiaryAnalysisResponse) {
+        val types = analysis.activityAnalysis
+            .flatMap { activity -> activity.selfEmotions + activity.stateEmotions }
+            .mapNotNull { emotion -> EmotionType.entries.firstOrNull { it.name == emotion.emotion } }
+            .mapNotNull { emotion ->
+                when (emotion.toEmotionGroup()) {
+                    EmotionGroup.스트레스 -> RoutineType.STRESS
+                    EmotionGroup.불안 -> RoutineType.ANXIETY
+                    EmotionGroup.우울 -> RoutineType.DEPRESSION
+                    else -> null
+                }
+            }
+            .distinct()
+
+        if (types.isEmpty()) return
+
+        val member = memberJpaRepository.getReferenceById(memberId)
+        val triggers = types.mapNotNull { type ->
+            val content = when (type) {
+                RoutineType.STRESS -> "스트레스가 높을 때 3분 동안 천천히 호흡하기"
+                RoutineType.ANXIETY -> "불안이 올라올 때 지금 보이는 것 5가지를 적기"
+                RoutineType.DEPRESSION -> "우울감이 느껴질 때 햇빛을 보며 10분 걷기"
+            }
+            if (routineJpaRepository.existsByMember_IdAndRoutineTypeAndContent(memberId, type, content)) {
+                null
+            } else {
+                RoutineEntity(
+                    member = member,
+                    routineType = type,
+                    content = content,
+                    isTrigger = true
+                )
+            }
+        }
+
+        if (triggers.isNotEmpty()) {
+            routineJpaRepository.saveAll(triggers)
+        }
     }
 
     private fun seedDefaults(memberId: String, type: RoutineType): List<RoutineEntity> {

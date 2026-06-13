@@ -14,4 +14,9 @@ class DiaryAchievementRepositoryImpl(
         val entities = diaryAchievements.map { DiaryAchievementEntity.fromDomain(it) }
         return diaryAchievementJpaRepository.saveAll(entities).map { it.toDomain() }
     }
+
+    override fun findByDiaryIds(diaryIds: List<Long>): List<DiaryAchievement> {
+        if (diaryIds.isEmpty()) return emptyList()
+        return diaryAchievementJpaRepository.findByDiaryIdIn(diaryIds).map { it.toDomain() }
+    }
 }
